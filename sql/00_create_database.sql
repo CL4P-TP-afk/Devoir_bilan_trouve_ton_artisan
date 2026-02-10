@@ -12,7 +12,7 @@ Ce script peut être exécuté plusieurs fois sans erreur.
 DROP DATABASE IF EXISTS trouve_ton_artisan;
 
 -- Création de la base de données
-CREATE DATABASE trouve_ton_artisan
+CREATE DATABASE IF NOT EXISTS trouve_ton_artisan
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_general_ci;
 
