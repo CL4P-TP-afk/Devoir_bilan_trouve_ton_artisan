@@ -18,10 +18,11 @@ Backend:
 - Sequelize
 
 ## Structure du projet
+```
 backend/ : API REST
 frontend/ : application React
 sql/ : scripts base de données
 docs/ : documentation du projet
-
+```
 ## Installation
 Documentation en cours de rédaction.
