@@ -381,6 +381,73 @@ Cette structure relationnelle facilite également les requêtes nécessaires à 
 
 ## 10. Difficultés rencontrées et solutions – à compléter
 
+### 10.1 Conflit de collation MySQL lors des requêtes de recherche
+
+Lors de l’exécution des requêtes de tests SQL, une erreur MySQL est apparue :
+```
+#1267 - Illegal mix of collations for operation 'like'
+```
+
+Cette erreur survenait lors de l’utilisation de l’opérateur LIKE sur des champs texte de la base de données.
+
+Après analyse, le problème provenait d’un **mélange de collations** entre :
+
+- la base de données
+- certaines tables
+- la session MySQL.
+
+Certaines parties du schéma utilisaient :
+```
+utf8mb4_general_ci
+```
+alors que d’autres utilisaient :
+```
+utf8mb4_unicode_ci
+```
+MySQL refusant de comparer des chaînes de caractères utilisant des collations différentes, les requêtes de recherche échouaient.
+
+#### Solution mise en place
+
+La base de données a été **standardisée** afin d’utiliser une configuration unique :
+```
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci
+```
+
+Cette standardisation a été appliquée :
+
+- à la base de données
+- aux tables
+- aux scripts SQL de création (00_create_database.sql et 02_schema.sql).
+
+Après cette correction, les requêtes utilisant LIKE fonctionnent normalement.
+
+#### Justification technique
+
+Le charset utf8mb4 permet de supporter l’ensemble des caractères Unicode modernes (accents, caractères internationaux, emojis) et constitue aujourd’hui le standard pour les applications web.
+
+La collation utf8mb4_unicode_ci définit les règles de comparaison et de tri des chaînes de caractères selon les standards Unicode. Elle permet notamment :
+
+- une gestion correcte des accents
+- une comparaison insensible à la casse,
+- un tri alphabétique cohérent.
+
+Cette configuration est couramment utilisée dans les applications professionnelles (SaaS, e-commerce, systèmes métiers, applications bancaires) afin d’assurer la cohérence linguistique et la stabilité des requêtes SQL.
+
+#### Bonnes pratiques retenues
+
+Cette difficulté a permis de mettre en évidence l’importance de :
+
+- définir une collation cohérente dès la création de la base
+- éviter les mélanges de collations dans un projet,
+- standardiser le charset et la collation au niveau de la base et des tables
+- privilégier utf8mb4_unicode_ci pour les applications web modernes.
+
+Cette correction garantit désormais un comportement homogène de la base de données et évite les erreurs de type :
+```
+Illegal mix of collations for operation 'like'
+```
+
 ---
 
 ## 11. Compétences acquises – à compléter

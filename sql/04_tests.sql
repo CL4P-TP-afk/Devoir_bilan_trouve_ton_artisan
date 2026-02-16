@@ -55,7 +55,6 @@ ORDER BY a.rating DESC, a.name ASC;
 
 -- =====================================================
 -- 5) Liste artisans par recherche (barre de recherche)
--- Force la collation pour éviter #1267
 -- =====================================================
 SET @q = 'boul';
 
@@ -69,9 +68,9 @@ SELECT
 FROM artisans a
 JOIN specialties s ON s.id = a.specialty_id
 JOIN categories c ON c.id = s.category_id
-WHERE a.name COLLATE utf8mb4_general_ci LIKE CONCAT('%', @q COLLATE utf8mb4_general_ci, '%')
-   OR s.name COLLATE utf8mb4_general_ci LIKE CONCAT('%', @q COLLATE utf8mb4_general_ci, '%')
-   OR a.city COLLATE utf8mb4_general_ci LIKE CONCAT('%', @q COLLATE utf8mb4_general_ci, '%')
+WHERE a.name LIKE CONCAT('%', @q, '%')
+   OR s.name LIKE CONCAT('%', @q, '%')
+   OR a.city LIKE CONCAT('%', @q, '%')
 ORDER BY a.rating DESC, a.name ASC;
 
 

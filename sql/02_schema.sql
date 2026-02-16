@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS categories (
   UNIQUE KEY uq_categories_name (name)
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+  COLLATE=utf8mb4_unicode_ci;
 
 -- 2) Table: specialities
 -- Une spécialité appartient à une seule catégorie
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS specialties (
     ON DELETE RESTRICT
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+  COLLATE=utf8mb4_unicode_ci;
 
 -- 3) Table: artisans
 -- Un artisan appartient à une seule spécialité
@@ -81,4 +81,4 @@ CREATE TABLE IF NOT EXISTS artisans (
     ON DELETE RESTRICT
 ) ENGINE=InnoDB
   DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_general_ci;
+  COLLATE=utf8mb4_unicode_ci;

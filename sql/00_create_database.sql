@@ -14,7 +14,7 @@ DROP DATABASE IF EXISTS trouve_ton_artisan;
 -- Création de la base de données
 CREATE DATABASE IF NOT EXISTS trouve_ton_artisan
 CHARACTER SET utf8mb4
-COLLATE utf8mb4_general_ci;
+COLLATE utf8mb4_unicode_ci;
 
 -- Utilisation de la base
 USE trouve_ton_artisan;
