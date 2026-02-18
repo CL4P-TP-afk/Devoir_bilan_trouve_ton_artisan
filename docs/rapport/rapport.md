@@ -391,6 +391,7 @@ La structure de la base respecte une normalisation simple (3NF) :
 - les artisans référencent une spécialité.
 
 Cette organisation évite la redondance de données et simplifie les mises à jour.
+
 ---
 
 ## 8. Développement de l’API – à compléter
