@@ -39,7 +39,7 @@ ORDER BY c.name;
 
 -- =====================================================
 -- 4) Liste artisans par catégorie (page catégorie)
--- Exemple : "Bâtiment" (change le nom si besoin)
+-- Exemple : "Bâtiment" (changez le nom pour tester les autres catégories)
 -- =====================================================
 SELECT
   a.id,
@@ -103,6 +103,7 @@ SELECT
   a.about,
   a.email,
   a.website,
+  a.image_url,
   a.is_featured,
   s.name AS specialty,
   c.name AS category

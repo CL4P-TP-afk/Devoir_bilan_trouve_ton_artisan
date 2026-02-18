@@ -123,7 +123,7 @@ ORDER BY a.rating DESC, a.name ASC;
 Résultat attendu : des résultats pertinents selon le mot-clé choisi (ici boul).
 Résultat obtenu (preuve) :
 
-+ [Export PDF : tests/exports/test05.pdf](../tests/exports/test05.pdf)
++ [Export PDF : tests/exports/test05.png](../tests/exports/test05.png)
 
 Commentaire : le brief impose la recherche sur le nom ; ici la recherche est étendue (bonus) à la ville et spécialité.
 
@@ -169,6 +169,7 @@ SELECT
   a.about,
   a.email,
   a.website,
+  a.image_url,
   a.is_featured,
   s.name AS specialty,
   c.name AS category
@@ -181,7 +182,7 @@ WHERE a.id = @artisan_id;
 Résultat attendu : 1 ligne complète correspondant à l’artisan demandé (ici l'artisan ayant pour id: 1).
 Résultat obtenu (preuve) :
 
-+ [Export PDF : tests/exports/test07.pdf](../tests/exports/test07.pdf)
++ [Export PDF : tests/exports/test07.png](../tests/exports/test07.png)
 
 Commentaire : cette requête correspond à l’endpoint de fiche (ex: GET /artisans/:id).
 

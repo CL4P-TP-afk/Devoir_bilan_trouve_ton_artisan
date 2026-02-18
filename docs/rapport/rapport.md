@@ -1,4 +1,4 @@
-# Notes de préparation – Rapport de projet / Rapport de stage
+# Rapport de projet 
 
 ## Introduction
 
@@ -304,6 +304,7 @@ Catégorie, Spécialité et Artisan.
 ---
 
 ### 7.2 MCD (Modèle Conceptuel de Données)
+Un champ image_url nullable a été ajouté afin de supporter l’affichage d’une image d’artisan dans les cartes et la page détail (présent dans les maquettes Figma). En l’absence de données fournies, une image générique sera utilisée côté interface.
 
 Entités :
 
@@ -323,12 +324,16 @@ Artisan
 - a_propos
 - email
 - site_web
+- image
 - is_featured
 
 Relations :
 
 Catégorie (1) ─── (N) Spécialité  
 Spécialité (1) ─── (N) Artisan
+
+**diagramme conceptuel**
+![MCD Trouve ton artisan](../mcd-mld/mcd_trouve_ton_artisan.png)
 
 ---
 
@@ -351,11 +356,21 @@ artisans
 - about
 - email
 - website
+- image_url
 - is_featured
 - specialty_id (FK)
 
+Les clés primaires (id) sont définies en auto-incrément afin de garantir l’unicité des enregistrements dans chaque table.
+
+Les relations entre entités sont assurées par des **clés étrangères** :
+- specialties.category_id → categories.id
+- artisans.specialty_id → specialties.id
+
+Ces contraintes relationnelles permettent d’assurer l’intégrité des données et d’empêcher la création d’enregistrements incohérents (par exemple un artisan sans spécialité).
+
 **Diagramme EER**
 ![Diagramme EER](../mcd-mld/eer_trouve_ton_artisan.png)
+
 
 ---
 
@@ -369,6 +384,13 @@ Cette structure relationnelle facilite également les requêtes nécessaires à 
 - affichage de la spécialité d’un artisan,
 - gestion des artisans du mois.
 
+La structure de la base respecte une normalisation simple (3NF) :
+
+- les catégories sont stockées une seule fois.
+- les spécialités sont liées à une catégorie.
+- les artisans référencent une spécialité.
+
+Cette organisation évite la redondance de données et simplifie les mises à jour.
 ---
 
 ## 8. Développement de l’API – à compléter

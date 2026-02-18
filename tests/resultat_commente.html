@@ -466,7 +466,7 @@ ORDER BY a.rating DESC, a.name ASC;
 <p>Résultat attendu : des résultats pertinents selon le mot-clé choisi (ici boul).
 Résultat obtenu (preuve) :</p>
 <ul>
-<li><a href="../tests/exports/test05.pdf">Export PDF : tests/exports/test05.pdf</a></li>
+<li><a href="../tests/exports/test05.png">Export PDF : tests/exports/test05.png</a></li>
 </ul>
 <p>Commentaire : le brief impose la recherche sur le nom ; ici la recherche est étendue (bonus) à la ville et spécialité.</p>
 <h2 id="%F0%9F%A7%A9-test-06--accueil--artisans-du-mois-3-maximum">🧩 Test 06 — Accueil : artisans du mois (3 maximum)</h2>
@@ -503,6 +503,7 @@ SELECT
   a.about,
   a.email,
   a.website,
+  a.image_url,
   a.is_featured,
   s.name AS specialty,
   c.name AS category
@@ -514,7 +515,7 @@ WHERE a.id = @artisan_id;
 <p>Résultat attendu : 1 ligne complète correspondant à l’artisan demandé (ici l'artisan ayant pour id: 1).
 Résultat obtenu (preuve) :</p>
 <ul>
-<li><a href="../tests/exports/test07.pdf">Export PDF : tests/exports/test07.pdf</a></li>
+<li><a href="../tests/exports/test07.png">Export PDF : tests/exports/test07.png</a></li>
 </ul>
 <p>Commentaire : cette requête correspond à l’endpoint de fiche (ex: GET /artisans/:id).</p>
 <h2 id="%F0%9F%A7%A9-test-08--contr%C3%B4le-qualit%C3%A9--artisans-sans-sp%C3%A9cialit%C3%A9">🧩 Test 08 — Contrôle qualité : artisans sans spécialité</h2>
