@@ -1,4 +1,4 @@
-# Notes de préparation – Rapport de projet / Rapport de stage
+# Rapport de projet 
 
 ## Introduction
 
@@ -304,6 +304,7 @@ Catégorie, Spécialité et Artisan.
 ---
 
 ### 7.2 MCD (Modèle Conceptuel de Données)
+Un champ image_url nullable a été ajouté afin de supporter l’affichage d’une image d’artisan dans les cartes et la page détail (présent dans les maquettes Figma). En l’absence de données fournies, une image générique sera utilisée côté interface.
 
 Entités :
 
@@ -323,12 +324,16 @@ Artisan
 - a_propos
 - email
 - site_web
+- image
 - is_featured
 
 Relations :
 
 Catégorie (1) ─── (N) Spécialité  
 Spécialité (1) ─── (N) Artisan
+
+**diagramme conceptuel**
+![MCD Trouve ton artisan](../mcd-mld/mcd_trouve_ton_artisan.png)
 
 ---
 
@@ -351,11 +356,21 @@ artisans
 - about
 - email
 - website
+- image_url
 - is_featured
 - specialty_id (FK)
 
+Les clés primaires (id) sont définies en auto-incrément afin de garantir l’unicité des enregistrements dans chaque table.
+
+Les relations entre entités sont assurées par des **clés étrangères** :
+- specialties.category_id → categories.id
+- artisans.specialty_id → specialties.id
+
+Ces contraintes relationnelles permettent d’assurer l’intégrité des données et d’empêcher la création d’enregistrements incohérents (par exemple un artisan sans spécialité).
+
 **Diagramme EER**
 ![Diagramme EER](../mcd-mld/eer_trouve_ton_artisan.png)
+
 
 ---
 
@@ -369,6 +384,13 @@ Cette structure relationnelle facilite également les requêtes nécessaires à 
 - affichage de la spécialité d’un artisan,
 - gestion des artisans du mois.
 
+La structure de la base respecte une normalisation simple (3NF) :
+
+- les catégories sont stockées une seule fois.
+- les spécialités sont liées à une catégorie.
+- les artisans référencent une spécialité.
+
+Cette organisation évite la redondance de données et simplifie les mises à jour.
 ---
 
 ## 8. Développement de l’API – à compléter
@@ -380,6 +402,73 @@ Cette structure relationnelle facilite également les requêtes nécessaires à 
 ---
 
 ## 10. Difficultés rencontrées et solutions – à compléter
+
+### 10.1 Conflit de collation MySQL lors des requêtes de recherche
+
+Lors de l’exécution des requêtes de tests SQL, une erreur MySQL est apparue :
+```
+#1267 - Illegal mix of collations for operation 'like'
+```
+
+Cette erreur survenait lors de l’utilisation de l’opérateur LIKE sur des champs texte de la base de données.
+
+Après analyse, le problème provenait d’un **mélange de collations** entre :
+
+- la base de données
+- certaines tables
+- la session MySQL.
+
+Certaines parties du schéma utilisaient :
+```
+utf8mb4_general_ci
+```
+alors que d’autres utilisaient :
+```
+utf8mb4_unicode_ci
+```
+MySQL refusant de comparer des chaînes de caractères utilisant des collations différentes, les requêtes de recherche échouaient.
+
+#### Solution mise en place
+
+La base de données a été **standardisée** afin d’utiliser une configuration unique :
+```
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci
+```
+
+Cette standardisation a été appliquée :
+
+- à la base de données
+- aux tables
+- aux scripts SQL de création (00_create_database.sql et 02_schema.sql).
+
+Après cette correction, les requêtes utilisant LIKE fonctionnent normalement.
+
+#### Justification technique
+
+Le charset utf8mb4 permet de supporter l’ensemble des caractères Unicode modernes (accents, caractères internationaux, emojis) et constitue aujourd’hui le standard pour les applications web.
+
+La collation utf8mb4_unicode_ci définit les règles de comparaison et de tri des chaînes de caractères selon les standards Unicode. Elle permet notamment :
+
+- une gestion correcte des accents
+- une comparaison insensible à la casse,
+- un tri alphabétique cohérent.
+
+Cette configuration est couramment utilisée dans les applications professionnelles (SaaS, e-commerce, systèmes métiers, applications bancaires) afin d’assurer la cohérence linguistique et la stabilité des requêtes SQL.
+
+#### Bonnes pratiques retenues
+
+Cette difficulté a permis de mettre en évidence l’importance de :
+
+- définir une collation cohérente dès la création de la base
+- éviter les mélanges de collations dans un projet,
+- standardiser le charset et la collation au niveau de la base et des tables
+- privilégier utf8mb4_unicode_ci pour les applications web modernes.
+
+Cette correction garantit désormais un comportement homogène de la base de données et évite les erreurs de type :
+```
+Illegal mix of collations for operation 'like'
+```
 
 ---
 
