@@ -5,14 +5,20 @@ Projet: Trouve ton artisan
 Description:
 Création d’un utilisateur SQL dédié à l’application
 et attribution des droits nécessaires.
+⚠️ IMPORTANT :
+Modifier le mot de passe ci-dessous avant utilisation.
+Ne jamais versionner un mot de passe réel en production.
+Le mot de passe doit également être renseigné dans le fichier backend/.env
+(clef DB_PASSWORD).
 -------------------------------------------------------
 */
 -- Suppression de l'utilisateur 'app_trouve_artisan'@'localhost' s'il existe
 DROP USER IF EXISTS 'app_trouve_artisan'@'localhost';
 
 -- Création de l'utilisateur applicatif
+-- ⚠️ Remplacer CHANGE_ME_LOCAL_PASSWORD par un mot de passe sécurisé
 CREATE USER IF NOT EXISTS 'app_trouve_artisan'@'localhost'
-IDENTIFIED BY 'ChangeMe!123';
+IDENTIFIED BY 'CHANGE_ME_LOCAL_PASSWORD';
 
 -- Attribution des droits sur la base du projet
 GRANT SELECT, INSERT, UPDATE, DELETE

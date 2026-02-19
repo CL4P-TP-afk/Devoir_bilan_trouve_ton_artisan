@@ -470,6 +470,20 @@ Cette correction garantit désormais un comportement homogène de la base de don
 ```
 Illegal mix of collations for operation 'like'
 ```
+### 10.2 Sécurité et gestion des secrets
+
+Lors du développement du backend, une attention particulière a été portée à la gestion des secrets.
+
+Le script `01_create_user_and_grants.sql` contient un mot de passe placeholder destiné à être modifié localement avant exécution. Aucun mot de passe réel n’est versionné dans le dépôt.
+
+Les identifiants de connexion à la base de données sont définis dans un fichier `.env`, non versionné grâce au `.gitignore`.
+
+Un fichier `.env.example` est fourni afin d’indiquer les variables nécessaires sans exposer de données sensibles.
+
+Cette démarche respecte les bonnes pratiques de séparation entre :
+- code versionné,
+- configuration locale,
+- secrets d’exécution.    
 
 ---
 

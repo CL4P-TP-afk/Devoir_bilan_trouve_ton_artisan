@@ -73,7 +73,7 @@ Réponse :
 }
 ```
 ## 📚 Endpoints disponibles
-GET /api/categories
+### GET /api/categories
 Retourne la liste des catégories triées par ordre alphabétique.
 
 Exemple de réponse :
@@ -89,6 +89,11 @@ Exemple de réponse :
   }
 ]
 ```
+### GET /api/artisans/featured
+
+Retourne jusqu’à 3 artisans mis en avant (homepage).
+
+Tri : note décroissante puis nom.
 
 ## 🛡️ Sécurité
 Utilisation d’un utilisateur MySQL dédié à l’application.
