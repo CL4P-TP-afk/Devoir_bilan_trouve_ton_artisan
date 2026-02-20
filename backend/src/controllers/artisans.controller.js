@@ -81,3 +81,49 @@ export async function getArtisanById(req, res) {
     res.status(500).json({ error: "Database error" });
   }
 }
+
+/**
+ * Recherche des artisans par mot-clé.
+ * Recherche sur : nom, ville, spécialité.
+ * Paramètre : ?search=xxx
+ */
+export async function searchArtisans(req, res) {
+  const q = (req.query.search || "").toString().trim();
+
+  // Si pas de mot-clé, on renvoie une liste vide (choix simple)
+  if (q.length === 0) {
+    return res.json([]);
+  }
+
+  try {
+    const like = `%${q}%`;
+
+    const [rows] = await pool.query(
+      `
+      SELECT
+        a.id,
+        a.name,
+        a.rating,
+        a.city,
+        a.image_url,
+        a.is_featured,
+        s.name AS specialty,
+        c.name AS category
+      FROM artisans a
+      JOIN specialties s ON s.id = a.specialty_id
+      JOIN categories c ON c.id = s.category_id
+      WHERE a.name LIKE ?
+         OR a.city LIKE ?
+         OR s.name LIKE ?
+      ORDER BY a.rating DESC, a.name ASC
+      LIMIT 25;
+      `,
+      [like, like, like]
+    );
+
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
+}
