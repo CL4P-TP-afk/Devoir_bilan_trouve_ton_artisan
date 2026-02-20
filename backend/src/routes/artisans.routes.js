@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getFeaturedArtisans } from "../controllers/artisans.controller.js";
+import { getFeaturedArtisans, getArtisanById } from "../controllers/artisans.controller.js";
 
 const router = Router();
 
@@ -8,5 +8,9 @@ const router = Router();
  * Retourne les artisans mis en avant (homepage)
  */
 router.get("/featured", getFeaturedArtisans);
-
+/**
+ * GET /api/artisans/:id
+ * Retourne la fiche détaillée d’un artisan
+ */
+router.get("/:id", getArtisanById);
 export default router;
