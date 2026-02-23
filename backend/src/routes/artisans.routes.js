@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { getFeaturedArtisans, getArtisanById, searchArtisans } from "../controllers/artisans.controller.js";
 import { catchAsync } from "../middlewares/catchAsync.js";
+import { validateIdParam } from "../middlewares/validateIdParam.js";
 
 const router = Router();
 
@@ -18,6 +19,6 @@ router.get("/", catchAsync(searchArtisans));
  * GET /api/artisans/:id
  * Retourne la fiche détaillée d’un artisan
  */
-router.get("/:id", catchAsync(getArtisanById));
+router.get("/:id", validateIdParam("id"), catchAsync(getArtisanById));
 
 export default router;
