@@ -6,14 +6,10 @@ import { pool } from "../db/pool.js";
  */
 
 export async function listCategories(req, res) {
-  try {
     const [rows] = await pool.query(
       "SELECT id, name FROM categories ORDER BY name ASC"
     );
     res.json(rows);
-  } catch (err) {
-    res.status(500).json({ error: "Database error" });
-  }
 }
 
 /**
@@ -27,8 +23,6 @@ export async function listArtisansByCategoryId(req, res) {
   if (!Number.isInteger(categoryId) || categoryId <= 0) {
     return res.status(400).json({ error: "Invalid category id" });
   }
-
-  try {
     // vérifier que la catégorie existe
     const [catRows] = await pool.query(
       "SELECT id, name FROM categories WHERE id = ?",
@@ -69,8 +63,4 @@ export async function listArtisansByCategoryId(req, res) {
       category: catRows[0],
       artisans: rows,
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error" });
-  }
 }
