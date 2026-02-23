@@ -17,12 +17,8 @@ export async function listCategories(req, res) {
  * La catégorie est identifiée par son id.
  */
 export async function listArtisansByCategoryId(req, res) {
-  const categoryId = Number(req.params.id);
+  const categoryId = req.params.id;
 
-  // Validation simple : id doit être un entier positif
-  if (!Number.isInteger(categoryId) || categoryId <= 0) {
-    return res.status(400).json({ error: "Invalid category id" });
-  }
     // vérifier que la catégorie existe
     const [catRows] = await pool.query(
       "SELECT id, name FROM categories WHERE id = ?",

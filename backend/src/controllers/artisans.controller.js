@@ -37,12 +37,7 @@ export async function getFeaturedArtisans(req, res) {
  * Retourne la fiche détaillée d’un artisan par son id.
  */
 export async function getArtisanById(req, res) {
-  const artisanId = Number(req.params.id);
-
-  // Validation simple
-  if (!Number.isInteger(artisanId) || artisanId <= 0) {
-    return res.status(400).json({ error: "Invalid artisan id" });
-  }
+  const artisanId = req.params.id;
 
     const [rows] = await pool.query(
       `
