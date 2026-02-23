@@ -13,6 +13,7 @@ import express from "express";
 import cors from "cors";
 import categoriesRouter from "./routes/categories.routes.js";
 import artisansRouter from "./routes/artisans.routes.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 
 const app = express();
@@ -30,5 +31,7 @@ app.get("/health", (req, res) => {
 
 app.use("/api/categories", categoriesRouter);
 app.use("/api/artisans", artisansRouter);
+
+app.use(errorHandler);
 
 export default app;

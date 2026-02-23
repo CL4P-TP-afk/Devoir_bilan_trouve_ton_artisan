@@ -6,7 +6,6 @@ import { pool } from "../db/pool.js";
  * Limite : 3 résultats.
  */
 export async function getFeaturedArtisans(req, res) {
-  try {
     const [rows] = await pool.query(
       `
       SELECT
@@ -31,10 +30,7 @@ export async function getFeaturedArtisans(req, res) {
     );
 
     res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error" });
-  }
+  
 }
 
 /**
@@ -48,7 +44,6 @@ export async function getArtisanById(req, res) {
     return res.status(400).json({ error: "Invalid artisan id" });
   }
 
-  try {
     const [rows] = await pool.query(
       `
       SELECT
@@ -76,10 +71,6 @@ export async function getArtisanById(req, res) {
     }
 
     res.json(rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error" });
-  }
 }
 
 /**
@@ -94,8 +85,6 @@ export async function searchArtisans(req, res) {
   if (q.length === 0) {
     return res.json([]);
   }
-
-  try {
     const like = `%${q}%`;
 
     const [rows] = await pool.query(
@@ -122,8 +111,4 @@ export async function searchArtisans(req, res) {
     );
 
     res.json(rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error" });
-  }
 }
