@@ -11,6 +11,9 @@
 
 import express from "express";
 import cors from "cors";
+import categoriesRouter from "./routes/categories.routes.js";
+import artisansRouter from "./routes/artisans.routes.js";
+
 
 const app = express();
 
@@ -24,5 +27,8 @@ app.use(express.json());
 app.get("/health", (req, res) => {
   res.json({ status: "API OK" });
 });
+
+app.use("/api/categories", categoriesRouter);
+app.use("/api/artisans", artisansRouter);
 
 export default app;
