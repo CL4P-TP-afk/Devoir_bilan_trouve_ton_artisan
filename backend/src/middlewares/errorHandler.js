@@ -1,3 +1,12 @@
+/**
+ * Middleware global de gestion des erreurs (doit être déclaré après les routes).
+ * Centralise la réponse JSON en cas d'erreur non gérée.
+ *
+ * @param {any} err
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @param {import("express").NextFunction} next
+ */
 export function errorHandler(err, req, res, next) {
   console.error("❌ API Error:", err);
 

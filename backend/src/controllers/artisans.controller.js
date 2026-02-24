@@ -1,9 +1,13 @@
 import { pool } from "../db/pool.js";
 
 /**
- * Retourne une liste d'artisans mis en avant.
+ * Retourne jusqu'à 3 artisans "mis en avant" pour la page d'accueil.
  * Tri : meilleure note d'abord, puis nom.
- * Limite : 3 résultats.
+ * 
+ * @route GET /api/artisans/featured
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @returns {Promise<void>}
  */
 export async function getFeaturedArtisans(req, res) {
     const [rows] = await pool.query(
@@ -34,7 +38,14 @@ export async function getFeaturedArtisans(req, res) {
 }
 
 /**
- * Retourne la fiche détaillée d’un artisan par son id.
+ * Retourne la fiche détaillée d’un artisan (par id).
+ *
+ * @route GET /api/artisans/:id
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @returns {Promise<void>}
+ *
+ * @throws {404} Artisan introuvable
  */
 export async function getArtisanById(req, res) {
   const artisanId = req.params.id;
@@ -70,8 +81,21 @@ export async function getArtisanById(req, res) {
 
 /**
  * Recherche des artisans par mot-clé.
- * Recherche sur : nom, ville, spécialité.
- * Paramètre : ?search=xxx
+ *
+ * La recherche s'effectue sur plusieurs champs :
+ * - nom de l'artisan
+ * - ville
+ * - spécialité
+ *
+ * Le mot-clé est transmis via le paramètre de requête `search`.
+ * Exemple :
+ * GET /api/artisans?search=boul
+ *
+ * @route GET /api/artisans
+ * @param {import("express").Request} req
+ * @param {string} [req.query.search] Mot-clé de recherche (optionnel)
+ * @param {import("express").Response} res
+ * @returns {Promise<void>} Liste d'artisans correspondant à la recherche
  */
 export async function searchArtisans(req, res) {
   const q = (req.query.search || "").toString().trim();
