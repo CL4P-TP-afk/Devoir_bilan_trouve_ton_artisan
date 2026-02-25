@@ -1,9 +1,9 @@
 /**
- * Middleware de validation d'un paramètre d'URL de type ID.
- * Exemple : /api/artisans/:id
+ * Valide et convertit un paramètre d'URL (ex: :id) en entier positif.
+ * Si invalide -> 400. Sinon remplace req.params[paramName] par un Number.
  *
- * - Vérifie que req.params[paramName] est un entier positif
- * - Convertit la valeur en Number et la réinjecte dans req.params
+ * @param {string} [paramName="id"]
+ * @returns {import("express").RequestHandler}
  */
 export function validateIdParam(paramName = "id") {
   return (req, res, next) => {
