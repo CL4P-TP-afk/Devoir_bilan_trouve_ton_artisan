@@ -131,7 +131,7 @@ Le projet a été réalisé en suivant une démarche progressive inspirée des m
 3. Conception des maquettes et du prototype interactif sous Figma (approche mobile-first)
 4. Modélisation de la base de données (MCD / MLD)
 5. Création de la base de données MySQL et insertion du jeu d’essai
-6. Développement de l’API REST (Node.js, Express, Sequelize)
+6. Développement de l’API REST (Node.js, Express, MySQL)
 7. Développement du front-end avec React
 8. Vérification des aspects accessibilité, sécurité et référencement (SEO)
 9. Tests, déploiement et rédaction du dossier final
@@ -394,7 +394,70 @@ Cette organisation évite la redondance de données et simplifie les mises à jo
 
 ---
 
-## 8. Développement de l’API – à compléter
+## 8. Développement de l’API 
+Une API REST a été développée afin de permettre au frontend React d’accéder aux données stockées dans la base MySQL.
+Cette API a été réalisée avec **Node.js et Express**, en utilisant la bibliothèque `mysql2` pour la connexion à la base de données.
+
+### 8.1 Architecture du backend
+
+L’API a été structurée selon une architecture modulaire inspirée des bonnes pratiques professionnelles :
+
+- **routes** : définition des endpoints HTTP
+- **controllers** : logique métier et requêtes SQL
+- **middlewares** : gestion des erreurs et validation des paramètres
+- **db** : gestion du pool de connexions MySQL
+- **docs** : documentation OpenAPI (Swagger)
+
+Cette séparation permet de maintenir un code lisible, maintenable et évolutif.
+
+---
+
+### 8.2 Endpoints principaux
+
+Les endpoints suivants ont été implémentés :
+
+- `GET /api/categories`
+- `GET /api/categories/:id/artisans`
+- `GET /api/artisans/featured`
+- `GET /api/artisans/:id`
+- `GET /api/artisans?search=...`
+
+Ces routes permettent :
+
+- d'afficher les catégories
+- de lister les artisans d'une catégorie
+- d'afficher les artisans mis en avant
+- d'afficher une fiche artisan détaillée
+- d'effectuer une recherche multi-critères.
+
+---
+
+### 8.3 Documentation de l’API
+
+L’API est documentée à l’aide de **Swagger (OpenAPI)**.
+
+La documentation interactive permet :
+
+- de visualiser les endpoints disponibles
+- de consulter les paramètres attendus
+- de tester les routes directement depuis l’interface.
+
+Cette documentation est accessible via :
+/api-docs
+
+---
+
+### 8.4 Bonnes pratiques mises en place
+
+Plusieurs bonnes pratiques backend ont été appliquées :
+
+- utilisation d’un **pool de connexions MySQL**
+- gestion centralisée des erreurs avec un middleware dédié
+- validation des paramètres d’URL
+- pagination des résultats pour les recherches
+- journalisation des requêtes HTTP avec Morgan
+
+Ces pratiques permettent d’améliorer la robustesse et la maintenabilité de l’API.
 
 ---
 
@@ -487,6 +550,57 @@ Cette démarche respecte les bonnes pratiques de séparation entre :
 
 ---
 
+### 10.3 Vulnérabilités npm liées à Swagger
+
+Lors de l’installation des dépendances nécessaires à la documentation de l’API avec Swagger, l’outil `npm audit` a signalé plusieurs vulnérabilités de sécurité.
+
+Ces alertes provenaient d’une dépendance indirecte utilisée par la bibliothèque `swagger-jsdoc`, qui utilise une version ancienne du module `glob`.
+
+Cette situation est connue dans l’écosystème Node.js et ne représente pas nécessairement un risque direct pour l’application lorsque l’outil est utilisé uniquement pour la documentation.
+
+#### Solution retenue
+
+Afin de limiter l’exposition :
+
+- Swagger est utilisé uniquement pour la **documentation de développement**
+- les dépendances critiques du backend restent séparées
+- aucune donnée sensible n’est exposée via la documentation.
+
+Cette démarche permet de conserver l’outil de documentation tout en restant attentif aux alertes de sécurité signalées par l’écosystème npm.
+
+---
+
 ## 11. Compétences acquises – à compléter
+
+La réalisation de ce projet a permis de développer plusieurs compétences techniques et méthodologiques :
+
+### Conception
+
+- analyse d’un cahier des charges
+- conception d’interfaces UX/UI avec Figma
+- création d’un design system
+- conception responsive mobile-first
+
+### Base de données
+
+- modélisation MCD / MLD
+- conception de schéma relationnel
+- création de scripts SQL structurés
+- gestion de l’intégrité des données
+
+### Backend
+
+- création d’une API REST avec Express
+- utilisation de MySQL avec Node.js
+- mise en place de middlewares
+- gestion centralisée des erreurs
+- pagination des résultats
+- documentation d’API avec Swagger
+
+### Méthodologie
+
+- utilisation de Git et GitHub
+- organisation du travail avec issues et branches
+- rédaction de documentation technique
 
 ---
