@@ -19,6 +19,7 @@ Cette API fournit les données nécessaires au frontend :
 - dotenv
 - cors
 - Swagger UI (documentation API)
+- Morgan (journalisation des requêtes HTTP)
 
 ---
 
@@ -187,6 +188,23 @@ Cette documentation est basée sur la spécification **OpenAPI 3**.
 
 ---
 
+## 📊 Logs API
+
+L'API utilise le middleware **Morgan** afin de journaliser les requêtes HTTP.
+
+Chaque requête affiche dans le terminal :
+
+- la méthode HTTP
+- l’URL appelée
+- le code de réponse
+- le temps de réponse
+
+Exemple :
+
+GET /api/categories 200 12 ms
+
+---
+
 ## 🛡️ Sécurité
 
 Utilisation d’un **utilisateur MySQL dédié** à l’application.
@@ -225,14 +243,16 @@ routes → controllers → base de données
 - séparation `app` / `server`
 - standardisation charset `utf8mb4`
 - collation `utf8mb4_unicode_ci`
+- pagination des résultats pour les recherches d'artisans
+- journalisation des requêtes HTTP avec Morgan
 
 ---
 
 ## 🔮 Évolutions possibles
 
-- pagination des résultats
-- système de vérification des artisans
-- upload d’image / logo artisan
+- pagination avancée avec total des résultats
+- système de vérification des artisans (`is_verified`)
+- ajout d’un logo ou d’une image pour chaque artisan
 - authentification administrateur
-
+- système de notation par les utilisateurs
 ---

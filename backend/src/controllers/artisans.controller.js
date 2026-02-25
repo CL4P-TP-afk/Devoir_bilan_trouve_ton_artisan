@@ -100,34 +100,52 @@ export async function getArtisanById(req, res) {
 export async function searchArtisans(req, res) {
   const q = (req.query.search || "").toString().trim();
 
-  // Si pas de mot-clé, on renvoie une liste vide (choix simple)
   if (q.length === 0) {
-    return res.json([]);
+    return res.json({
+      page: 1,
+      limit: 25,
+      results: 0,
+      data: [],
+    });
   }
-    const like = `%${q}%`;
 
-    const [rows] = await pool.query(
-      `
-      SELECT
-        a.id,
-        a.name,
-        a.rating,
-        a.city,
-        a.image_url,
-        a.is_featured,
-        s.name AS specialty,
-        c.name AS category
-      FROM artisans a
-      JOIN specialties s ON s.id = a.specialty_id
-      JOIN categories c ON c.id = s.category_id
-      WHERE a.name LIKE ?
-         OR a.city LIKE ?
-         OR s.name LIKE ?
-      ORDER BY a.rating DESC, a.name ASC
-      LIMIT 25;
-      `,
-      [like, like, like]
-    );
+  // 1) Pagination : récupérer page et limit depuis req.query
+  const page = Math.max(1, Number(req.query.page) || 1);
+  const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 25));
+  const offset = (page - 1) * limit;
 
-    res.json(rows);
+  // 2) Préparer le LIKE
+  const like = `%${q}%`;
+
+  // 3) SQL avec LIMIT/OFFSET
+  const [rows] = await pool.query(
+    `
+    SELECT
+      a.id,
+      a.name,
+      a.rating,
+      a.city,
+      a.image_url,
+      a.is_featured,
+      s.name AS specialty,
+      c.name AS category
+    FROM artisans a
+    JOIN specialties s ON s.id = a.specialty_id
+    JOIN categories c ON c.id = s.category_id
+    WHERE a.name LIKE ?
+       OR a.city LIKE ?
+       OR s.name LIKE ?
+    ORDER BY a.rating DESC, a.name ASC
+    LIMIT ? OFFSET ?;
+    `,
+    [like, like, like, limit, offset]
+  );
+
+  // 4) Réponse paginée
+  res.json({
+    page,
+    limit,
+    results: rows.length,
+    data: rows,
+  });
 }
