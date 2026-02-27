@@ -1,3 +1,14 @@
+/**
+ * Démarrage du serveur.
+ *
+ * - Charge l'environnement (dotenv/config)
+ * - Vérifie la connexion à la base via sequelize.authenticate()
+ * - Lance l'application Express
+ *
+ * Objectif :
+ * éviter de démarrer l'API si la base est indisponible.
+ */
+
 import "dotenv/config";
 import app from "./app.js";
 import { sequelize } from "./models/index.js";

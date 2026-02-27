@@ -1,3 +1,10 @@
+/**
+ * Modèle Sequelize : Category.
+ *
+ * Représente la table `categories`.
+ * Les champs et types correspondent au schéma SQL existant.
+ */
+
 import { DataTypes } from "sequelize";
 import { sequelize } from "../db/sequelize.js";
 

@@ -1,10 +1,21 @@
+/**
+ * Controllers "categories".
+ *
+ * Contient la logique métier des endpoints liés aux catégories
+ * et aux artisans d'une catégorie.
+ *
+ * L'accès à la base se fait via Sequelize (modèles et associations).
+ */
+
 import { Category, Artisan, Specialty } from "../models/index.js";
 
 /**
  * Liste toutes les catégories (tri alphabétique).
  *
  * @route GET /api/categories
- * @returns {Promise<void>}
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @returns {Promise<void>} Tableau JSON de catégories [{ id, name }, ...]
  */
 
 export async function listCategories(req, res) {

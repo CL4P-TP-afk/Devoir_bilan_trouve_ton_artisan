@@ -1,3 +1,17 @@
+/**
+ * Controllers "artisans".
+ *
+ * Contient la logique métier des endpoints liés aux artisans.
+ * L'accès aux données se fait via Sequelize (models + associations).
+ *
+ * Note : rating est stocké en DECIMAL en base.
+ * Sequelize le renvoie souvent sous forme de string, d'où l'usage de Number(...).
+ * 
+ * Remarque :
+ * on conserve le format JSON attendu par le frontend,
+ * même si les données sont récupérées via ORM.
+ */
+
 import { Artisan, Specialty, Category } from "../models/index.js";
 import { Op } from "sequelize";
 
@@ -81,22 +95,29 @@ export async function getArtisanById(req, res) {
 }
 
 /**
- * Recherche des artisans par mot-clé.
+ * Recherche des artisans par mot-clé avec pagination.
  *
  * La recherche s'effectue sur plusieurs champs :
  * - nom de l'artisan
  * - ville
  * - spécialité
  *
- * Le mot-clé est transmis via le paramètre de requête `search`.
- * Exemple :
+ * Paramètres de requête (query) :
+ * - search : mot-clé (optionnel)
+ * - page : numéro de page (défaut : 1)
+ * - limit : taille de page (défaut : 25, maximum : 100)
+ *
+ * Exemples :
  * GET /api/artisans?search=boul
+ * GET /api/artisans?search=boul&page=2&limit=10
  *
  * @route GET /api/artisans
  * @param {import("express").Request} req
- * @param {string} [req.query.search] Mot-clé de recherche (optionnel)
+ * @param {string} [req.query.search]
+ * @param {number} [req.query.page]
+ * @param {number} [req.query.limit]
  * @param {import("express").Response} res
- * @returns {Promise<void>} Liste d'artisans correspondant à la recherche
+ * @returns {Promise<void>} Réponse JSON : { page, limit, results, data }
  */
 export async function searchArtisans(req, res) {
   const q = (req.query.search || "").toString().trim();

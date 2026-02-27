@@ -1,3 +1,15 @@
+/**
+ * Point d'entrée des modèles Sequelize.
+ *
+ * - Importe les modèles (Category, Specialty, Artisan)
+ * - Déclare les relations (associations) entre les tables
+ * - Exporte sequelize + modèles prêts à être utilisés par les controllers
+ *
+ * Relations :
+ * - Category (1) -> (N) Specialty
+ * - Specialty (1) -> (N) Artisan
+ */
+
 import { sequelize } from "../db/sequelize.js";
 import { Category } from "./Category.js";
 import { Specialty } from "./Specialty.js";

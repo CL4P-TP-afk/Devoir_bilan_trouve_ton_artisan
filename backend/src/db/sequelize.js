@@ -1,3 +1,16 @@
+/**
+ * Configuration Sequelize.
+ *
+ * Sequelize est l'ORM utilisé pour se connecter à MySQL/MariaDB et manipuler
+ * les données via des modèles (Category, Specialty, Artisan) au lieu d'écrire
+ * des requêtes SQL manuelles dans les controllers.
+ *
+ * - Utilise les variables d'environnement (.env)
+ * - Désactive le logging SQL par défaut (logging: false)
+ * - Configure les conventions de nommage pour matcher la base existante :
+ *   underscored + created_at / updated_at.
+ */
+
 import { Sequelize } from "sequelize";
 
 export const sequelize = new Sequelize(
@@ -7,7 +20,7 @@ export const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: "mysql", // ok pour MySQL et MariaDB
-    logging: true,   // mets true si tu veux voir les requêtes SQL
+    logging: true,   
     define: {
       underscored: true,
       timestamps: true,

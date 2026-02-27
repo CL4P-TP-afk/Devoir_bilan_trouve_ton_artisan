@@ -1,3 +1,10 @@
+/**
+ * Modèle Sequelize : Artisan.
+ *
+ * Représente la table `artisans`.
+ * Les champs et types correspondent au schéma SQL existant.
+ */
+
 import { DataTypes } from "sequelize";
 import { sequelize } from "../db/sequelize.js";
 
