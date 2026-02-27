@@ -1,8 +1,13 @@
 /**
- * Valide et convertit un paramètre d'URL (ex: :id) en entier positif.
- * Si invalide -> 400. Sinon remplace req.params[paramName] par un Number.
+ * validateIdParam
  *
- * @param {string} [paramName="id"]
+ * Valide et convertit un paramètre d'URL (ex: :id) en entier positif.
+ * - Si invalide : renvoie 400
+ * - Si valide : remplace req.params[paramName] (string) par un Number
+ *
+ * Utile pour centraliser la validation et simplifier les controllers.
+ *
+ * @param {string} [paramName="id"] Nom du paramètre à valider
  * @returns {import("express").RequestHandler}
  */
 export function validateIdParam(paramName = "id") {
