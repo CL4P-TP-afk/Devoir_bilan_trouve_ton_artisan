@@ -1,12 +1,18 @@
 /**
  * Configuration principale de l'application Express.
- * 
- * - Initialise Express
- * - Configure les middlewares globaux (CORS, JSON)
- * - Déclare les routes API
- * 
+ *
+ * Responsabilités :
+ * - initialise Express
+ * - configure les middlewares globaux
+ *   - CORS
+ *   - parsing JSON
+ *   - logs HTTP avec Morgan
+ * - expose les routes de l'API
+ * - expose la documentation Swagger
+ * - configure le gestionnaire global d'erreurs
+ *
  * Ce fichier ne démarre pas le serveur.
- * Il exporte simplement l'application configurée.
+ * Le démarrage est effectué dans server.js.
  */
 
 import express from "express";

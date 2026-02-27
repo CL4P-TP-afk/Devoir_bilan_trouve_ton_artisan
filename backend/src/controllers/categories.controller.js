@@ -1,17 +1,30 @@
-import { pool } from "../db/pool.js";
+/**
+ * Controllers "categories".
+ *
+ * Contient la logique métier des endpoints liés aux catégories
+ * et aux artisans d'une catégorie.
+ *
+ * L'accès à la base se fait via Sequelize (modèles et associations).
+ */
+
+import { Category, Artisan, Specialty } from "../models/index.js";
 
 /**
  * Liste toutes les catégories (tri alphabétique).
  *
  * @route GET /api/categories
- * @returns {Promise<void>}
+ * @param {import("express").Request} req
+ * @param {import("express").Response} res
+ * @returns {Promise<void>} Tableau JSON de catégories [{ id, name }, ...]
  */
 
 export async function listCategories(req, res) {
-    const [rows] = await pool.query(
-      "SELECT id, name FROM categories ORDER BY name ASC"
-    );
-    res.json(rows);
+  const rows = await Category.findAll({
+    attributes: ["id", "name"],
+    order: [["name", "ASC"]],
+  });
+
+  res.json(rows);
 }
 
 /**
@@ -33,46 +46,36 @@ export async function listCategories(req, res) {
  * @throws {404} Si la catégorie n'existe pas
  */
 export async function listArtisansByCategoryId(req, res) {
-  const categoryId = req.params.id;
+  const categoryId = req.params.id; // validé
 
-    // vérifier que la catégorie existe
-    const [catRows] = await pool.query(
-      "SELECT id, name FROM categories WHERE id = ?",
-      [categoryId]
-    );
+  const category = await Category.findByPk(categoryId, {
+    attributes: ["id", "name"],
+  });
 
-    if (catRows.length === 0) {
-      return res.status(404).json({ error: "Category not found" });
-    }
+  if (!category) return res.status(404).json({ error: "Category not found" });
 
-    const [rows] = await pool.query(
-      `
-      SELECT
-        a.id,
-        a.name,
-        a.rating,
-        a.city,
-        a.about,
-        a.email,
-        a.website,
-        a.image_url,
-        a.is_featured,
-        s.id AS specialty_id,
-        s.name AS specialty,
-        c.id AS category_id,
-        c.name AS category
-      FROM artisans a
-      JOIN specialties s ON s.id = a.specialty_id
-      JOIN categories c ON c.id = s.category_id
-      WHERE c.id = ?
-      ORDER BY a.rating DESC, a.name ASC;
-      `,
-      [categoryId]
-    );
+  const artisans = await Artisan.findAll({
+    include: [
+      {
+        model: Specialty,
+        as: "specialty",
+        attributes: ["name", "category_id"],
+        where: { category_id: categoryId },
+        required: true,
+      },
+    ],
+    order: [["rating", "DESC"], ["name", "ASC"]],
+  });
 
-    // Réponse avec un petit contexte utile au front
-    res.json({
-      category: catRows[0],
-      artisans: rows,
-    });
+  res.json({
+    category,
+    artisans: artisans.map((a) => ({
+      id: a.id,
+      name: a.name,
+      rating: Number(a.rating),
+      city: a.city,
+      image_url: a.image_url,
+      specialty: a.specialty?.name,
+    })),
+  });
 }

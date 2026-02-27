@@ -1,4 +1,19 @@
-import { pool } from "../db/pool.js";
+/**
+ * Controllers "artisans".
+ *
+ * Contient la logique métier des endpoints liés aux artisans.
+ * L'accès aux données se fait via Sequelize (models + associations).
+ *
+ * Note : rating est stocké en DECIMAL en base.
+ * Sequelize le renvoie souvent sous forme de string, d'où l'usage de Number(...).
+ * 
+ * Remarque :
+ * on conserve le format JSON attendu par le frontend,
+ * même si les données sont récupérées via ORM.
+ */
+
+import { Artisan, Specialty, Category } from "../models/index.js";
+import { Op } from "sequelize";
 
 /**
  * Retourne jusqu'à 3 artisans "mis en avant" pour la page d'accueil.
@@ -10,31 +25,32 @@ import { pool } from "../db/pool.js";
  * @returns {Promise<void>}
  */
 export async function getFeaturedArtisans(req, res) {
-    const [rows] = await pool.query(
-      `
-      SELECT
-        a.id,
-        a.name,
-        a.rating,
-        a.city,
-        a.about,
-        a.email,
-        a.website,
-        a.image_url,
-        a.is_featured,
-        s.name AS specialty,
-        c.name AS category
-      FROM artisans a
-      JOIN specialties s ON s.id = a.specialty_id
-      JOIN categories c ON c.id = s.category_id
-      WHERE a.is_featured = 1
-      ORDER BY a.rating DESC, a.name ASC
-      LIMIT 3;
-      `
-    );
+  const rows = await Artisan.findAll({
+    where: { is_featured: true },
+    limit: 3,
+    order: [["rating", "DESC"], ["name", "ASC"]],
+    include: [
+      {
+        model: Specialty,
+        as: "specialty",
+        attributes: ["name"],
+        include: [{ model: Category, as: "category", attributes: ["name"] }],
+      },
+    ],
+  });
 
-    res.json(rows);
-  
+  res.json(
+    rows.map((a) => ({
+      id: a.id,
+      name: a.name,
+      rating: Number(a.rating),
+      city: a.city,
+      image_url: a.image_url,
+      is_featured: a.is_featured ? 1 : 0,
+      specialty: a.specialty?.name,
+      category: a.specialty?.category?.name,
+    }))
+  );
 }
 
 /**
@@ -48,104 +64,109 @@ export async function getFeaturedArtisans(req, res) {
  * @throws {404} Artisan introuvable
  */
 export async function getArtisanById(req, res) {
-  const artisanId = req.params.id;
+  const artisanId = req.params.id; // déjà validé par validateIdParam
 
-    const [rows] = await pool.query(
-      `
-      SELECT
-        a.id,
-        a.name,
-        a.rating,
-        a.city,
-        a.about,
-        a.email,
-        a.website,
-        a.image_url,
-        a.is_featured,
-        s.name AS specialty,
-        c.name AS category
-      FROM artisans a
-      JOIN specialties s ON s.id = a.specialty_id
-      JOIN categories c ON c.id = s.category_id
-      WHERE a.id = ?
-      `,
-      [artisanId]
-    );
+  const a = await Artisan.findByPk(artisanId, {
+    include: [
+      {
+        model: Specialty,
+        as: "specialty",
+        attributes: ["name"],
+        include: [{ model: Category, as: "category", attributes: ["name"] }],
+      },
+    ],
+  });
 
-    if (rows.length === 0) {
-      return res.status(404).json({ error: "Artisan not found" });
-    }
+  if (!a) return res.status(404).json({ error: "Artisan not found" });
 
-    res.json(rows[0]);
+  res.json({
+    id: a.id,
+    name: a.name,
+    rating: Number(a.rating),
+    city: a.city,
+    about: a.about,
+    email: a.email,
+    website: a.website,
+    image_url: a.image_url,
+    is_featured: a.is_featured ? 1 : 0,
+    specialty: a.specialty?.name,
+    category: a.specialty?.category?.name,
+  });
 }
 
 /**
- * Recherche des artisans par mot-clé.
+ * Recherche des artisans par mot-clé avec pagination.
  *
  * La recherche s'effectue sur plusieurs champs :
  * - nom de l'artisan
  * - ville
  * - spécialité
  *
- * Le mot-clé est transmis via le paramètre de requête `search`.
- * Exemple :
+ * Paramètres de requête (query) :
+ * - search : mot-clé (optionnel)
+ * - page : numéro de page (défaut : 1)
+ * - limit : taille de page (défaut : 25, maximum : 100)
+ *
+ * Exemples :
  * GET /api/artisans?search=boul
+ * GET /api/artisans?search=boul&page=2&limit=10
  *
  * @route GET /api/artisans
  * @param {import("express").Request} req
- * @param {string} [req.query.search] Mot-clé de recherche (optionnel)
+ * @param {string} [req.query.search]
+ * @param {number} [req.query.page]
+ * @param {number} [req.query.limit]
  * @param {import("express").Response} res
- * @returns {Promise<void>} Liste d'artisans correspondant à la recherche
+ * @returns {Promise<void>} Réponse JSON : { page, limit, results, data }
  */
 export async function searchArtisans(req, res) {
   const q = (req.query.search || "").toString().trim();
 
-  if (q.length === 0) {
-    return res.json({
-      page: 1,
-      limit: 25,
-      results: 0,
-      data: [],
-    });
+  if (!q) {
+    return res.json({ page: 1, limit: 25, results: 0, data: [] });
   }
 
-  // 1) Pagination : récupérer page et limit depuis req.query
   const page = Math.max(1, Number(req.query.page) || 1);
   const limit = Math.min(100, Math.max(1, Number(req.query.limit) || 25));
   const offset = (page - 1) * limit;
 
-  // 2) Préparer le LIKE
   const like = `%${q}%`;
 
-  // 3) SQL avec LIMIT/OFFSET
-  const [rows] = await pool.query(
-    `
-    SELECT
-      a.id,
-      a.name,
-      a.rating,
-      a.city,
-      a.image_url,
-      a.is_featured,
-      s.name AS specialty,
-      c.name AS category
-    FROM artisans a
-    JOIN specialties s ON s.id = a.specialty_id
-    JOIN categories c ON c.id = s.category_id
-    WHERE a.name LIKE ?
-       OR a.city LIKE ?
-       OR s.name LIKE ?
-    ORDER BY a.rating DESC, a.name ASC
-    LIMIT ? OFFSET ?;
-    `,
-    [like, like, like, limit, offset]
-  );
+  const rows = await Artisan.findAll({
+    where: {
+      [Op.or]: [
+        { name: { [Op.like]: like } },
+        { city: { [Op.like]: like } },
+        { "$specialty.name$": { [Op.like]: like } },
+      ],
+    },
+    include: [
+      {
+        model: Specialty,
+        as: "specialty",
+        attributes: ["name", "category_id"],
+        include: [{ model: Category, as: "category", attributes: ["name"] }],
+      },
+    ],
+    order: [["rating", "DESC"], ["name", "ASC"]],
+    limit,
+    offset,
+    subQuery: false,
+  });
 
-  // 4) Réponse paginée
   res.json({
     page,
     limit,
     results: rows.length,
-    data: rows,
+    data: rows.map((a) => ({
+      id: a.id,
+      name: a.name,
+      rating: Number(a.rating),
+      city: a.city,
+      image_url: a.image_url,
+      is_featured: a.is_featured ? 1 : 0,
+      specialty: a.specialty?.name,
+      category: a.specialty?.category?.name,
+    })),
   });
 }

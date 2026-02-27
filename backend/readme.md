@@ -15,7 +15,8 @@ Cette API fournit les données nécessaires au frontend :
 - Node.js
 - Express
 - MySQL / MariaDB
-- mysql2 (Promise API)
+- Sequelize (ORM)
+- mysql2 (driver utilisé par Sequelize)
 - dotenv
 - cors
 - Swagger UI (documentation API)
@@ -27,26 +28,32 @@ Cette API fournit les données nécessaires au frontend :
 ```
 backend/
 ├── src/
-│   ├── app.js # Configuration Express
-│   ├── server.js # Point d'entrée du serveur
+│   ├── app.js            # Configuration Express
+│   ├── server.js         # Point d'entrée du serveur
 │   │
 │   ├── db/
-│   │   └── pool.js # Pool de connexions MySQL
+│   │   └── sequelize.js  # Configuration Sequelize (connexion DB)
 │   │
-│   ├── controllers/ # Logique métier
+│   ├── models/           # Modèles Sequelize
+│   │   ├── Artisan.js
+│   │   ├── Category.js
+│   │   ├── Specialty.js
+│   │   └── index.js      # Associations entre modèles
+│   │
+│   ├── controllers/      # Logique métier
 │   │   ├── artisans.controller.js
 │   │   └── categories.controller.js
 │   │
-│   ├── routes/ # Définition des endpoints
+│   ├── routes/           # Définition des endpoints
 │   │   ├── artisans.routes.js
 │   │   └── categories.routes.js
 │   │
-│   ├── middlewares/ # Middlewares (validation, erreurs)
+│   ├── middlewares/      # Middlewares (validation, erreurs)
 │   │   ├── catchAsync.js
 │   │   ├── errorHandler.js
 │   │   └── validateIdParam.js
 │   │
-│   └── docs/ # Documentation OpenAPI
+│   └── docs/             # Documentation OpenAPI
 │       └── openapi.js
 │
 └── package.json
@@ -85,6 +92,18 @@ Database Layer
 ▼
 Réponse JSON
 ```
+### Accès aux données
+
+L’accès à la base de données est réalisé via **Sequelize**, un ORM permettant
+de manipuler les tables sous forme de modèles JavaScript.
+
+Les relations entre tables sont définies dans `src/models/index.js` :
+
+- Category (1) → (N) Specialty
+- Specialty (1) → (N) Artisan
+
+Ces associations permettent à Sequelize de générer automatiquement
+les requêtes SQL nécessaires (JOIN).
 
 ---
 
@@ -239,7 +258,7 @@ routes → controllers → base de données
 
 ### Autres bonnes pratiques :
 
-- pool de connexions MySQL
+- ORM Sequelize pour l'accès aux données
 - séparation `app` / `server`
 - standardisation charset `utf8mb4`
 - collation `utf8mb4_unicode_ci`

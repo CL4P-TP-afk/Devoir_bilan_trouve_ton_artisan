@@ -1,32 +1,30 @@
 /**
- * Point d'entrée du serveur.
- * 
- * - Charge les variables d'environnement
- * - Vérifie la connexion à la base de données
- * - Lance l'écoute du serveur Express
+ * Point d'entrée du serveur API.
+ *
+ * Responsabilités :
+ * - charger les variables d'environnement
+ * - vérifier la connexion à la base de données via Sequelize
+ * - démarrer le serveur Express
+ *
+ * Si la connexion à la base échoue, le serveur ne démarre pas
+ * afin d'éviter une API partiellement fonctionnelle.
  */
 
-import app from "./app.js";
 import "dotenv/config";
-import { pool } from "./db/pool.js";
+import app from "./app.js";
+import { sequelize } from "./models/index.js";
 
 const PORT = process.env.PORT || 3001;
 
 async function start() {
   try {
-    // Test de connexion à la base de données au démarrage
-    const conn = await pool.getConnection();
-    await conn.ping();
-    conn.release();
-    console.log("✅ MySQL connected");
+    await sequelize.authenticate();
+    console.log("✅ Sequelize connected");
+    app.listen(PORT, () => console.log(`✅ API running on http://localhost:${PORT}`));
   } catch (err) {
-    console.error("❌ MySQL connection failed:", err.message);
+    console.error("❌ Sequelize connection error:", err);
     process.exit(1);
   }
-
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
 }
 
 start();
