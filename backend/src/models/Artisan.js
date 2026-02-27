@@ -1,8 +1,14 @@
 /**
- * Modèle Sequelize : Artisan.
+ * Modèle Sequelize : Artisan
  *
- * Représente la table `artisans`.
- * Les champs et types correspondent au schéma SQL existant.
+ * Représente la table `artisans` dans la base de données.
+ *
+ * Chaque instance correspond à un artisan référencé dans l'application.
+ * Les types Sequelize sont alignés sur le schéma SQL défini dans
+ * les scripts de création de base (02_schema.sql).
+ *
+ * Ce modèle est utilisé par les controllers pour effectuer
+ * les opérations de lecture (findAll, findByPk, etc.).
  */
 
 import { DataTypes } from "sequelize";

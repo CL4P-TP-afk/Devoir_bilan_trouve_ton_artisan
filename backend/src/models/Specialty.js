@@ -1,8 +1,12 @@
 /**
- * Modèle Sequelize : Specialty.
+ * Modèle Sequelize : Specialty
  *
  * Représente la table `specialties`.
- * Les champs et types correspondent au schéma SQL existant.
+ * Une spécialité correspond à un métier précis (ex : boulanger, plombier).
+ *
+ * Relation :
+ * - appartient à une Category
+ * - possède plusieurs Artisans
  */
 
 import { DataTypes } from "sequelize";

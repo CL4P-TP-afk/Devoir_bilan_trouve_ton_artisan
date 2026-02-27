@@ -1,8 +1,11 @@
 /**
- * Modèle Sequelize : Category.
+ * Modèle Sequelize : Category
  *
  * Représente la table `categories`.
- * Les champs et types correspondent au schéma SQL existant.
+ * Une catégorie regroupe plusieurs spécialités d'artisans.
+ *
+ * Relation :
+ * Category (1) -> (N) Specialty
  */
 
 import { DataTypes } from "sequelize";

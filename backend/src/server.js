@@ -1,12 +1,13 @@
 /**
- * Démarrage du serveur.
+ * Point d'entrée du serveur API.
  *
- * - Charge l'environnement (dotenv/config)
- * - Vérifie la connexion à la base via sequelize.authenticate()
- * - Lance l'application Express
+ * Responsabilités :
+ * - charger les variables d'environnement
+ * - vérifier la connexion à la base de données via Sequelize
+ * - démarrer le serveur Express
  *
- * Objectif :
- * éviter de démarrer l'API si la base est indisponible.
+ * Si la connexion à la base échoue, le serveur ne démarre pas
+ * afin d'éviter une API partiellement fonctionnelle.
  */
 
 import "dotenv/config";
