@@ -396,16 +396,18 @@ Cette organisation évite la redondance de données et simplifie les mises à jo
 
 ## 8. Développement de l’API 
 Une API REST a été développée afin de permettre au frontend React d’accéder aux données stockées dans la base MySQL.
-Cette API a été réalisée avec **Node.js et Express**, en utilisant la bibliothèque `mysql2` pour la connexion à la base de données.
+Cette API a été réalisée avec **Node.js et Express**, en utilisant l’ORM **Sequelize** pour l’accès à la base de données MySQL.
+Sequelize permet de manipuler les données via des **modèles JavaScript représentant les tables** plutôt que d’écrire directement des requêtes SQL dans les contrôleurs.
 
 ### 8.1 Architecture du backend
 
 L’API a été structurée selon une architecture modulaire inspirée des bonnes pratiques professionnelles :
 
 - **routes** : définition des endpoints HTTP
-- **controllers** : logique métier et requêtes SQL
+- **controllers** : logique métier et accès aux données
+- **models** : modèles Sequelize représentant les tables de la base
 - **middlewares** : gestion des erreurs et validation des paramètres
-- **db** : gestion du pool de connexions MySQL
+- **db** : configuration de la connexion Sequelize
 - **docs** : documentation OpenAPI (Swagger)
 
 Cette séparation permet de maintenir un code lisible, maintenable et évolutif.
@@ -451,13 +453,90 @@ Cette documentation est accessible via :
 
 Plusieurs bonnes pratiques backend ont été appliquées :
 
-- utilisation d’un **pool de connexions MySQL**
+- utilisation de l’ORM **Sequelize** pour l’accès aux données
 - gestion centralisée des erreurs avec un middleware dédié
 - validation des paramètres d’URL
 - pagination des résultats pour les recherches
 - journalisation des requêtes HTTP avec Morgan
 
 Ces pratiques permettent d’améliorer la robustesse et la maintenabilité de l’API.
+
+---
+
+### 8.5 Utilisation de l’ORM Sequelize
+
+Afin de structurer l’accès à la base de données et de se rapprocher des pratiques utilisées en entreprise, l’accès aux données a été réalisé à l’aide de l’ORM **Sequelize**.
+
+Sequelize permet de représenter les tables de la base sous forme de **modèles JavaScript**.  
+Chaque modèle correspond à une table et définit ses champs ainsi que ses relations avec les autres modèles.
+
+Dans ce projet, trois modèles principaux ont été créés :
+
+- Category
+- Specialty
+- Artisan
+
+Les relations entre ces modèles sont définies dans un fichier central (`models/index.js`) :
+
+- Category (1) → (N) Specialty  
+- Specialty (1) → (N) Artisan
+
+Ces associations permettent à Sequelize de générer automatiquement les **requêtes SQL et les jointures nécessaires** lors de l’utilisation de `include` dans les requêtes.
+
+Cette approche permet :
+- de réduire l’écriture de requêtes SQL manuelles
+- de structurer le code backend
+- d’améliorer la maintenabilité de l’application.
+
+---
+
+### 8.6 Architecture technique de l’application
+L’application est organisée selon une architecture classique en trois couches :
+
+- **Frontend** : application React responsable de l’interface utilisateur
+- **API** : serveur Node.js / Express exposant les endpoints REST
+- **Base de données** : base relationnelle MySQL contenant les données métiers
+
+Le frontend communique avec l’API via des requêtes HTTP.  
+L’API se charge de traiter la logique métier et d’accéder aux données via l’ORM Sequelize.
+
+Schéma simplifié de l’architecture :
+```
+Utilisateur
+   │
+   ▼
+Frontend React
+(interface utilisateur)
+   │
+   ▼
+API REST Express
+(logique métier)
+   │
+   ▼
+Sequelize (ORM)
+   │
+   ▼
+Base de données MySQL
+(stockage des données)
+```
+
+---
+
+### 8.7 Sécurité de l’API
+Plusieurs bonnes pratiques de sécurité ont été appliquées lors du développement de l’API.
+
+Tout d’abord, l’accès à la base de données est réalisé via un **utilisateur SQL dédié à l’application**, disposant uniquement des droits nécessaires (SELECT, INSERT, UPDATE, DELETE).  
+Ce principe de **moindre privilège** permet de limiter les risques en cas de compromission de l’application.
+
+Les paramètres sensibles de connexion à la base de données (hôte, utilisateur, mot de passe) sont stockés dans un fichier **.env** et ne sont pas versionnés dans le dépôt Git.
+
+L’API intègre également plusieurs mécanismes de protection :
+
+- validation des paramètres d’URL via un middleware (`validateIdParam`)
+- gestion centralisée des erreurs avec un middleware global
+- utilisation de Sequelize qui protège contre les injections SQL via les requêtes paramétrées
+
+Ces mesures permettent d’améliorer la robustesse et la sécurité globale de l’application.
 
 ---
 
@@ -591,7 +670,7 @@ La réalisation de ce projet a permis de développer plusieurs compétences tech
 ### Backend
 
 - création d’une API REST avec Express
-- utilisation de MySQL avec Node.js
+- utilisation de Sequelize pour l’accès aux données
 - mise en place de middlewares
 - gestion centralisée des erreurs
 - pagination des résultats
