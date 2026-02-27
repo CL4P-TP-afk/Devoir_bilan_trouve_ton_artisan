@@ -1,5 +1,7 @@
 # Trouve ton artisan
 
+## Présentation du projet
+
 Projet fullstack réalisé dans le cadre de ma formation développeur web.
 
 L'objectif de l'application est de permettre aux utilisateurs de trouver facilement un artisan local à partir de sa catégorie ou d'une recherche.
@@ -14,7 +16,7 @@ Fonctionnalités principales :
 
 ---
 
-# 📌 État d’avancement du projet
+## 📌 État d’avancement du projet
 
 - ✅ Maquettage UX/UI (Figma : desktop / tablette / mobile)
 - ✅ Modélisation base de données (MCD / MLD / EER)
@@ -25,32 +27,53 @@ Fonctionnalités principales :
 
 ---
 
-# 🛠️ Stack technique
+## 🛠️ Stack technique
 
-## Backend
+### Backend
 
 - Node.js
 - Express
 - MySQL / MariaDB
-- mysql2
+- Sequelize (ORM)
+- mysql2 (driver utilisé par Sequelize)
 - Swagger UI (OpenAPI)
 - dotenv
 - cors
 - morgan (logs HTTP)
 
-## Base de données
+---
+
+### Base de données
 
 - MySQL / MariaDB
 - charset : `utf8mb4`
 - collation : `utf8mb4_unicode_ci`
 
-## Frontend
+---
 
-- React (en cours de développement)
+### Frontend
+
+- React
+- React Router
+- Bootstrap
+- Sass
 
 ---
 
-# 📂 Structure du projet
+## 📂 Structure du projet
+### 🧠 Architecture backend
+
+L'API suit une architecture classique **Express MVC** :
+
+- **routes** : définition des endpoints API
+- **controllers** : logique métier
+- **models** : modèles Sequelize représentant les tables
+- **middlewares** : validation et gestion des erreurs
+- **db** : configuration de la connexion à la base
+
+Sequelize est utilisé comme **ORM** afin de manipuler les données via des modèles
+plutôt que via des requêtes SQL écrites directement dans les controllers.
+
 ```
 ├── backend/ # API Express + documentation Swagger
 ├── docs/ # rapport de projet et documentation
@@ -61,15 +84,15 @@ Fonctionnalités principales :
 ```
 ---
 
-# 🚀 Installation du projet
+## 🚀 Installation du projet
 
-## 1️⃣ Base de données
+### 1️⃣ Base de données
 
-### Les scripts SQL se trouvent dans le dossier :
+#### Les scripts SQL se trouvent dans le dossier :
 - sql/
 ---
 
-### Ordre d’exécution recommandé :
+#### Ordre d’exécution recommandé :
 
 1️⃣ `00_create_database.sql`  
 2️⃣ `01_create_user_and_grants.sql`  
@@ -79,7 +102,7 @@ Fonctionnalités principales :
 
 ---
 
-## 2️⃣ Lancer l'API backend
+### 2️⃣ Lancer l'API backend
 
 ```bash
 cd backend
@@ -87,15 +110,15 @@ npm install
 npm run dev
 ```
 
-### API disponible sur :
+#### API disponible sur :
 [http://localhost:3001](http://localhost:3001)
 
 ---
-### Endpoint de test :
+#### Endpoint de test :
 [http://localhost:3001/health](http://localhost:3001/health)
 
 ---
-### Documentation Swagger :
+#### Documentation Swagger :
 [http://localhost:3001/api-docs](http://localhost:3001/api-docs)
 
 ---
@@ -122,10 +145,13 @@ npm run dev
 ### 📊 Fonctionnalités backend
 
 - API REST Express
+- ORM Sequelize pour l'accès aux données
 - pagination des résultats
 - logs HTTP avec Morgan
 - validation des paramètres (middleware)
 - gestion centralisée des erreurs
+
+---
 
 ## 👤 Auteur
 ```
