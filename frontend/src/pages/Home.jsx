@@ -16,7 +16,7 @@ export default function Home() {
       <p className="text-muted">
         Page d’accueil (placeholder). On branchera l’API ensuite.
       </p>
-      <ArtisanCard artisan={artisan} />
+      <ArtisanCard artisan={artisan} cardTitleLevel="h3" />
     </>
   );
 }

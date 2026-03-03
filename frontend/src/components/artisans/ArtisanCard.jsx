@@ -1,19 +1,22 @@
 /**
- * Composant ArtisanCard
- *
- * Affiche les informations principales d’un artisan sous forme de carte.
- * Utilisé sur :
- * - page d'accueil (artisans du mois)
- * - liste d’artisans
- * - résultats de recherche
+ * Composant d'affichage d'un artisan sous forme de carte.
+ * 
+ * Ce composant est purement visuel : il reçoit les données
+ * d'un artisan via les props et ne fait aucun appel API.
+ * 
+ * @param {Object} props
+ * @param {Object} props.artisan - Données de l'artisan
+ * @param {string} props.cardTitleLevel - Niveau du titre HTML (h2, h3, h4...)
  */
 
-export default function ArtisanCard({ artisan }) {
+export default function ArtisanCard({ artisan, cardTitleLevel = "h3" }) {
 
   // Image par défaut si l'artisan n'en possède pas
   const imageUrl = artisan.image_url
-    ? artisan.image_url
-    : "/images/artisan-placeholder.jpg";
+    ? artisan.image_url : "/images/artisan-placeholder.jpg";
+    
+  // Niveau du titre HTML variable 
+  const CardTitleTag = cardTitleLevel;
 
   return (
     <div className="col-md-4 mb-4">
@@ -29,9 +32,9 @@ export default function ArtisanCard({ artisan }) {
         <div className="card-body">
 
           {/* Nom artisan */}
-          <h5 className="card-title">
-            {artisan.name}
-          </h5>
+          <CardTitleTag className="card-title">
+          {artisan.name}
+          </CardTitleTag>
 
           {/* Spécialité */}
           <p className="card-text">
