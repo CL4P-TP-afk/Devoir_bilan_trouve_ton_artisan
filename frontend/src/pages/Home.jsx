@@ -31,7 +31,10 @@ export default function Home() {
     <>
       <HeroSection />
       <StepsSection />
-      <FeaturedArtisansSection artisans={artisans} />
+      <FeaturedArtisansSection
+        artisans={artisans}
+        loading={loading}
+        error={error}/>
     </>
   );
 }
