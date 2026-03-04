@@ -1,5 +1,9 @@
 @use "./variables" as *;
 
+@import "./variables";
+@import "./home";
+
 body {
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
+
