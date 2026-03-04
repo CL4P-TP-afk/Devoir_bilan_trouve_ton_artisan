@@ -19,39 +19,43 @@ export default function StepsSection() {
   ];
 
   return (
-    <section className="py-4 my-5" style={{ backgroundColor: "#F1F8FC" }}>
+    <section className="steps-section py-4 my-5">
       <div className="container">
-        <h2 className="h4 text-center mb-4" style={{ color: "#00497C"}}>Comment trouver mon artisan ?</h2>
+
+        <h2 className="steps-title h4 text-center mb-4">
+          Comment trouver mon artisan ?
+        </h2>
 
         <ol className="row g-4 list-unstyled m-0 p-0">
+
           {steps.map((step, index) => (
             <li className="col-12 col-md-6 col-lg-3" key={step.title}>
+
               <div className="d-flex align-items-start gap-2">
-                {/* marqueur carré bleu */}
-                <span
-                  aria-hidden="true"
-                  style={{
-                    width: 12,
-                    height: 12,
-                    marginTop: 6,
-                    backgroundColor: "#0074C7",
-                    display: "inline-block",
-                  }}
-                />
+
+                <span className="steps-marker" aria-hidden="true" />
 
                 <div>
-                  <div style={{ color: "#0074C7", fontWeight: 600 }}>
+
+                  <div className="steps-number">
                     Étape {index + 1}
                   </div>
 
-                  <div style={{ fontWeight: 700 }}>{step.title}</div>
+                  <div className="steps-step-title">
+                    {step.title}
+                  </div>
 
                   <p className="mb-0">{step.text}</p>
+
                 </div>
+
               </div>
+
             </li>
           ))}
+
         </ol>
+
       </div>
     </section>
   );
