@@ -1,30 +1,9 @@
 @use "./variables" as *;
 
+@import "./variables";
+@import "./home";
+
 body {
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
-.steps-section {
-  background-color: #F1F8FC;
-}
-
-.steps-title {
-  color: #00497C;
-}
-
-.steps-marker {
-  width: 12px;
-  height: 12px;
-  margin-top: 6px;
-  background-color: #0074C7;
-  display: inline-block;
-}
-
-.steps-number {
-  color: #0074C7;
-  font-weight: 600;
-}
-
-.steps-step-title {
-  font-weight: 700;
-}
