@@ -30,3 +30,19 @@
 .featured-subtitle {
   color: #6c757d; // couleur bootstrap "text-muted"
 }
+
+.hero-section {
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+.hero-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: $blue-700;
+}
+
+.hero-button {
+  padding: 12px 28px;
+  border-radius: 50px;
+}
