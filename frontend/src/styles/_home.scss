@@ -1,6 +1,5 @@
 @use "./variables" as *;
 
-
 .steps-section {
   background-color: $blue-100;
 }
@@ -31,7 +30,7 @@
 }
 
 .featured-subtitle {
-  color: #6c757d; // couleur bootstrap "text-muted"
+  color: $muted;
 }
 
 .hero-section {
@@ -40,9 +39,7 @@
 }
 
 .hero-title {
-  font-size: 2.2rem;
   font-weight: 700;
-  color: $blue-700;
 }
 
 .hero-button {

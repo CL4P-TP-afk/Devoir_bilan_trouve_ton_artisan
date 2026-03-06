@@ -1,5 +1,17 @@
-// TODO plus tard : couleurs du design system Figma
-// Couleurs Figma
+// Palette principale issue du style guide Figma
+$font-main: "Graphik", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+$font-size-h1: 2rem;
+$font-size-h2: 1.5rem;
+
 $blue-100: #F1F8FC;
 $blue-500: #0074C7;
 $blue-700: #00497C;
+
+$text-main: #384050;
+$error: #CD2C2E;
+$success: #82B864;
+
+// Neutres utiles
+$white: #FFFFFF;
+$muted: #6C757D;

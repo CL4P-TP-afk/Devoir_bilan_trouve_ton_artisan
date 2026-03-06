@@ -7,12 +7,14 @@ export default function App() {
   const element = useRoutes(routes);
 
   return (
-    <>
+    <div className="d-flex flex-column min-vh-100">
       <Header />
-      <main className="container py-4">
+
+      <main className="flex-grow-1">
         {element}
       </main>
+
       <Footer />
-    </>
+    </div>
   );
 }
