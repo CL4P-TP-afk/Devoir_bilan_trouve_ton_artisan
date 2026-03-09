@@ -3,6 +3,12 @@ import { NavLink } from "react-router-dom";
 import LogoHeaderFooter from "../../assets/LogoHeaderFooter.png";
 import { getCategories } from "../../services/categoryService";
 
+const FALLBACK_CATEGORIES = [
+  { id: 1, name: "Alimentation" },
+  { id: 2, name: "Bâtiment" },
+  { id: 3, name: "Fabrication" },
+  { id: 4, name: "Services" },
+];
 
 
 export default function Header() {
@@ -15,6 +21,7 @@ export default function Header() {
         setCategories(data);
       } catch (error) {
         console.error("Erreur lors du chargement des catégories :", error);
+        setCategories(FALLBACK_CATEGORIES);
       }
     }
 
