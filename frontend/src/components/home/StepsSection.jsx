@@ -22,7 +22,7 @@ export default function StepsSection() {
     <section className="steps-section py-4 my-5">
       <div className="container">
 
-        <h2 className="steps-title h4 text-center mb-4">
+        <h2 className="steps-title text-center mb-4">
           Comment trouver mon artisan ?
         </h2>
 
@@ -37,13 +37,13 @@ export default function StepsSection() {
 
                 <div>
 
-                  <div className="steps-number">
+                  <p className="steps-number">
                     Étape {index + 1}
-                  </div>
+                  </p>
 
-                  <div className="steps-step-title">
+                  <h3 className="steps-step-title">
                     {step.title}
-                  </div>
+                  </h3>
 
                   <p className="mb-0">{step.text}</p>
 
