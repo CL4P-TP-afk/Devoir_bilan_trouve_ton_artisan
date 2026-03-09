@@ -1,6 +1,9 @@
-import api from "./api";
+import { apiFetch } from "./api";
 
-export async function getCategories() {
-  const response = await api.get("/categories");
-  return response.data;
+/**
+ * Récupère la liste des catégories
+ * @returns {Promise<Array>}
+ */
+export function getCategories() {
+  return apiFetch("/categories");
 }
