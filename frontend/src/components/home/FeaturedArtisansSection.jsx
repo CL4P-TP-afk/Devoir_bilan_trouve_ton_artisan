@@ -5,7 +5,7 @@ export default function FeaturedArtisansSection({ artisans, loading, error }) {
     <section className="featured-section mb-5">
       <div className="container">
         <div className="text-center mb-4">
-          <h2 className="featured-title h4 mb-2">Artisans du mois</h2>
+          <h2 className="featured-title mb-2">Artisans du mois</h2>
           <p className="featured-subtitle mb-0">
             Découvrez les artisans mis en avant ce mois-ci.
           </p>
@@ -26,7 +26,7 @@ export default function FeaturedArtisansSection({ artisans, loading, error }) {
         {!loading && !error && artisans.length > 0 && (
           <div className="row g-4">
             {artisans.map((artisan) => (
-              <div className="col-12 col-md-6 col-lg-4" key={artisan.id}>
+              <div key={artisan.id} className="col-12 col-md-6 col-lg-4">
                 <ArtisanCard artisan={artisan} cardTitleLevel="h3" />
               </div>
             ))}

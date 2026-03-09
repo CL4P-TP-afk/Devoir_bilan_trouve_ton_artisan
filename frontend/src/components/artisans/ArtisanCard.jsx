@@ -1,65 +1,49 @@
 /**
  * Composant d'affichage d'un artisan sous forme de carte.
- * 
+ *
  * Ce composant est purement visuel : il reçoit les données
  * d'un artisan via les props et ne fait aucun appel API.
- * 
+ *
  * @param {Object} props
  * @param {Object} props.artisan - Données de l'artisan
  * @param {string} props.cardTitleLevel - Niveau du titre HTML (h2, h3, h4...)
  */
 
 export default function ArtisanCard({ artisan, cardTitleLevel = "h3" }) {
-
-  // Image par défaut si l'artisan n'en possède pas
   const imageUrl = artisan.image_url
-    ? artisan.image_url : "/images/artisan-placeholder.jpg";
-    
-  // Niveau du titre HTML variable 
+    ? artisan.image_url
+    : "/images/artisan-placeholder.jpg";
+
   const CardTitleTag = cardTitleLevel;
 
   return (
-    <div className="col-md-4 mb-4">
-      <div className="card h-100 shadow-sm">
+    <article className="artisan-card">
+      <img
+        src={imageUrl}
+        className="artisan-card__image"
+        alt={`Photo de ${artisan.name}`}
+      />
 
-        {/* Image artisan */}
-        <img
-          src={imageUrl}
-          className="card-img-top"
-          alt={`Photo de ${artisan.name}`}
-        />
-
-        <div className="card-body">
-
-          {/* Nom artisan */}
-          <CardTitleTag className="card-title">
+      <div className="artisan-card__body">
+        <CardTitleTag className="artisan-card__title">
           {artisan.name}
-          </CardTitleTag>
+        </CardTitleTag>
 
-          {/* Spécialité */}
-          <p className="card-text">
-            {artisan.specialty}
-          </p>
+        <p className="artisan-card__specialty">
+          {artisan.specialty}
+        </p>
 
-          {/* Ville */}
-          <p className="card-text text-muted">
-            {artisan.city}
-          </p>
+        <p className="artisan-card__city">
+          {artisan.city}
+        </p>
 
-          {/* Note */}
-          <div>
-            ⭐ {artisan.rating}
-          </div>
-
-          {/* Badge artisan du mois */}
-          {artisan.is_featured && (
-            <span className="badge bg-primary mt-2">
-              Artisan du mois
-            </span>
-          )}
-
+        <div
+          className="artisan-card__rating"
+          aria-label={`Note de ${artisan.rating} sur 5`}
+        >
+          {artisan.rating}/5
         </div>
       </div>
-    </div>
+    </article>
   );
 }
