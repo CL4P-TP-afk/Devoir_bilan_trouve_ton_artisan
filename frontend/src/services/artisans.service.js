@@ -16,3 +16,19 @@ export function getFeaturedArtisans() {
 export function getArtisanById(artisanId) {
   return apiFetch(`/artisans/${artisanId}`);
 }
+
+/**
+ * Envoie un message à un artisan depuis le formulaire de contact.
+ * @param {number|string} artisanId
+ * @param {{name: string, email: string, message: string}} payload
+ * @returns {Promise<Object>}
+ */
+export function sendContactMessage(artisanId, payload) {
+  return apiFetch(`/artisans/${artisanId}/contact`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+}
