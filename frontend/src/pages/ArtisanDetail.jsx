@@ -65,9 +65,45 @@ export default function ArtisanDetail() {
 
         <section className="artisan-about mb-5">
 
-          <h2>À propos</h2>
+          <div className="row">
 
-          <p>{artisan.about}</p>
+            <div className="col-md-7">
+
+              <h2>À propos</h2>
+
+              <p>{artisan.about}</p>
+
+            </div>
+
+            <div className="col-md-5">
+
+              <ul className="list-unstyled">
+
+                <li>
+                  <strong>Adresse / Ville</strong>
+                  <br />
+                  {artisan.city}
+                </li>
+
+                <li className="mt-2">
+                  <strong>Email</strong>
+                  <br />
+                  {artisan.email}
+                </li>
+
+                <li className="mt-2">
+                  <strong>Site web</strong>
+                  <br />
+                  <a href={artisan.website} target="_blank">
+                    {artisan.website}
+                  </a>
+                </li>
+
+              </ul>
+
+            </div>
+
+          </div>
 
         </section>
 
