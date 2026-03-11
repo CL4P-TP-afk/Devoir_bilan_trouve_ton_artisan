@@ -7,3 +7,12 @@ import { apiFetch } from "./api";
 export function getFeaturedArtisans() {
   return apiFetch("/artisans/featured");
 }
+
+/**
+ * Récupère la fiche détaillée d’un artisan
+ * @param {number|string} artisanId
+ * @returns {Promise<Object>}
+ */
+export function getArtisanById(artisanId) {
+  return apiFetch(`/artisans/${artisanId}`);
+}
