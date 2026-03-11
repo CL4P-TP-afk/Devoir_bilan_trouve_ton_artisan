@@ -14,6 +14,7 @@
 
 import { Artisan, Specialty, Category } from "../models/index.js";
 import { Op } from "sequelize";
+import nodemailer from "nodemailer";
 
 /**
  * Retourne jusqu'à 3 artisans "mis en avant" pour la page d'accueil.
@@ -168,5 +169,65 @@ export async function searchArtisans(req, res) {
       specialty: a.specialty?.name,
       category: a.specialty?.category?.name,
     })),
+  });
+}
+
+/**
+ * Envoie un message de contact à un artisan.
+ *
+ * @route POST /api/artisans/:id/contact
+ */
+export async function sendContactMessage(req, res) {
+  const artisanId = req.params.id;
+  const { name, email, message } = req.body;
+
+  if (!name || !email || !message) {
+    return res.status(400).json({
+      error: "Tous les champs sont requis",
+    });
+  }
+
+  const artisan = await Artisan.findByPk(artisanId);
+
+  if (!artisan) {
+    return res.status(404).json({
+      error: "Artisan introuvable",
+    });
+  }
+
+  // Création d’un compte SMTP de test Ethereal
+  const testAccount = await nodemailer.createTestAccount();
+
+  // Création du transporteur SMTP avec les identifiants générés
+  const transporter = nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false,
+    auth: {
+      user: testAccount.user,
+      pass: testAccount.pass,
+    },
+  });
+
+  // Envoi du message
+  const info = await transporter.sendMail({
+    from: '"Trouve ton artisan" <contact@trouve-ton-artisan.test>',
+    to: artisan.email || "contact@test.local",
+    replyTo: email,
+    subject: `Message pour ${artisan.name}`,
+    text: `
+Nom : ${name}
+Email : ${email}
+
+Message :
+${message}
+    `,
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: "Message envoyé avec succès",
+    messageId: info.messageId,
+    previewUrl: nodemailer.getTestMessageUrl(info),
   });
 }

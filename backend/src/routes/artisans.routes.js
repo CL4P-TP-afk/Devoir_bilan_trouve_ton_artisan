@@ -8,6 +8,7 @@ import { Router } from "express";
 import { getFeaturedArtisans, getArtisanById, searchArtisans } from "../controllers/artisans.controller.js";
 import { catchAsync } from "../middlewares/catchAsync.js";
 import { validateIdParam } from "../middlewares/validateIdParam.js";
+import { sendContactMessage } from "../controllers/artisans.controller.js";
 
 const router = Router();
 
@@ -48,3 +49,5 @@ router.get("/", catchAsync(searchArtisans));
 router.get("/:id", validateIdParam("id"), catchAsync(getArtisanById));
 
 export default router;
+
+router.post("/:id/contact", validateIdParam("id"), catchAsync(sendContactMessage));
