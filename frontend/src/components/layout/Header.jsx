@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import LogoHeaderFooter from "../../assets/LogoHeaderFooter.png";
 import { getCategories } from "../../services/categoryService";
+import { useNavigate } from "react-router-dom";
 
 const FALLBACK_CATEGORIES = [
   { id: 1, name: "Alimentation" },
@@ -12,7 +13,9 @@ const FALLBACK_CATEGORIES = [
 
 
 export default function Header() {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([]);  
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchCategories() {
@@ -92,15 +95,16 @@ export default function Header() {
               </label>
 
               <div className="input-group">
-                <span className="input-group-text">
+                <button type="submit" className="btn btn-outline-secondary">
                   <i className="bi bi-search" aria-hidden="true"></i>
-                </span>
+                </button>
 
                 <input
-                  id="search-artisan"
-                  className="form-control"
                   type="search"
+                  className="form-control"
                   placeholder="Rechercher un artisan"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
                 />
               </div>
             </form>
