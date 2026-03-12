@@ -32,3 +32,12 @@ export function sendContactMessage(artisanId, payload) {
     body: JSON.stringify(payload),
   });
 }
+
+/**
+ * Recherche d'artisans par mot-clé
+ * @param {string} query
+ * @returns {Promise<Array>}
+ */
+export function searchArtisans(query) {
+  return apiFetch(`/artisans?search=${encodeURIComponent(query)}`);
+}
