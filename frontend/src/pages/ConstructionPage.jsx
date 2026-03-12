@@ -1,15 +1,13 @@
 import { Link } from "react-router-dom";
 
-export default function NotFound() {
+export default function ConstructionPage() {
   return (
     <section className="py-5">
       <div className="container text-center">
-        <h1 className="mb-3">404</h1>
-
-        <h2 className="mb-4">Page non trouvée</h2>
+        <h1 className="mb-4">Page en construction</h1>
 
         <p className="mb-5">
-          La page que vous recherchez n’existe pas ou a été déplacée.
+          Cette page sera prochainement complétée par un cabinet spécialisé.
         </p>
 
         <Link to="/" className="btn btn-outline-primary">
