@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import LogoHeaderFooter from "../../assets/LogoHeaderFooter.png";
 import { getCategories } from "../../services/categoryService";
-import { useNavigate } from "react-router-dom";
 
 const FALLBACK_CATEGORIES = [
   { id: 1, name: "Alimentation" },
@@ -11,9 +10,8 @@ const FALLBACK_CATEGORIES = [
   { id: 4, name: "Services" },
 ];
 
-
 export default function Header() {
-  const [categories, setCategories] = useState([]);  
+  const [categories, setCategories] = useState([]);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
@@ -31,12 +29,23 @@ export default function Header() {
     fetchCategories();
   }, []);
 
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    const trimmedQuery = query.trim();
+
+    if (!trimmedQuery) {
+      navigate("/recherche");
+      return;
+    }
+
+    navigate(`/recherche?q=${encodeURIComponent(trimmedQuery)}`);
+  }
 
   return (
     <header className="site-header border-bottom">
       <nav className="navbar navbar-expand-lg bg-white">
         <div className="container align-items-center">
-
           {/* Logo */}
           <NavLink className="navbar-brand d-flex align-items-center gap-2" to="/">
             <img
@@ -60,10 +69,8 @@ export default function Header() {
           </button>
 
           <div className="collapse navbar-collapse" id="mainNavbar">
-
             {/* Menu */}
             <ul className="navbar-nav mx-lg-auto mb-2 mb-lg-0 gap-lg-3">
-
               <li className="nav-item">
                 <NavLink
                   to="/"
@@ -85,11 +92,15 @@ export default function Header() {
                   </NavLink>
                 </li>
               ))}
-
             </ul>
 
             {/* Search */}
-            <form className="d-flex" role="search" aria-label="Rechercher un artisan">
+            <form
+              className="d-flex"
+              role="search"
+              aria-label="Rechercher un artisan"
+              onSubmit={handleSubmit}
+            >
               <label htmlFor="search-artisan" className="visually-hidden">
                 Rechercher un artisan
               </label>
@@ -100,6 +111,7 @@ export default function Header() {
                 </button>
 
                 <input
+                  id="search-artisan"
                   type="search"
                   className="form-control"
                   placeholder="Rechercher un artisan"
@@ -108,7 +120,6 @@ export default function Header() {
                 />
               </div>
             </form>
-
           </div>
         </div>
       </nav>
