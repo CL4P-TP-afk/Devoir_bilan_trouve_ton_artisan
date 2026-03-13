@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import ArtisanCard from "../components/artisans/ArtisanCard";
 import { searchArtisans } from "../services/artisans.service";
+import SearchForm from "../components/search/SearchForm";
 
 export default function SearchResults() {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-
   const initialQuery = searchParams.get("q") || "";
 
-  const [query, setQuery] = useState(initialQuery);
   const [artisans, setArtisans] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -40,18 +38,6 @@ export default function SearchResults() {
     fetchResults();
   }, [initialQuery]);
 
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    const trimmedQuery = query.trim();
-
-    if (!trimmedQuery) {
-      navigate("/recherche");
-      return;
-    }
-
-    navigate(`/recherche?q=${encodeURIComponent(trimmedQuery)}`);
-  }
 
   return (
     <section className="py-5">
@@ -64,34 +50,13 @@ export default function SearchResults() {
           </h1>
         </header>
 
-        <form className="mb-5" onSubmit={handleSubmit}>
+        <div className="mb-5">
           <div className="row justify-content-center">
             <div className="col-12 col-md-8 col-lg-6">
-              <label htmlFor="search-page-input" className="visually-hidden">
-                Rechercher un artisan
-              </label>
-
-              <div className="input-group">
-                <button type="submit" className="btn btn-outline-secondary">
-                <i className="bi bi-search" aria-hidden="true"></i>
-                </button>
-
-                <input
-                  id="search-page-input"
-                  type="search"
-                  className="form-control"
-                  placeholder="Rechercher un artisan"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
-
-                <button type="submit" className="btn btn-primary">
-                  Rechercher
-                </button>
-              </div>
+              <SearchForm initialValue={initialQuery} showButton />
             </div>
           </div>
-        </form>
+        </div>
 
         {loading && <p>Recherche en cours...</p>}
 
