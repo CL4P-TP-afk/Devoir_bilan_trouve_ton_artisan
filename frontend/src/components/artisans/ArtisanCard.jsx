@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import artisanPlaceholder from "../../assets/artisan-placeholder.png";
 
 /**
  * Composant d'affichage d'un artisan sous forme de carte cliquable.
@@ -10,7 +11,7 @@ import { Link } from "react-router-dom";
  * Ce composant est réutilisable dans plusieurs contextes :
  * - page d'accueil
  * - page catégorie
- * - futurs résultats de recherche
+ * - page de résultats de recherche
  *
  * @param {Object} props
  * @param {Object} props.artisan - Données de l'artisan à afficher
@@ -20,15 +21,20 @@ export default function ArtisanCard({ artisan, cardTitleLevel = "h3" }) {
   /**
    * Image fallback utilisée si aucun visuel n'est fourni par l'API.
    */
-  const imageUrl = artisan.image_url
-    ? artisan.image_url
-    : "/images/artisan-placeholder.jpg";
+  const imageUrl = artisan.image_url || artisanPlaceholder;
 
   /**
    * Permet d'adapter le niveau du titre selon la page
    * tout en gardant le composant réutilisable.
    */
   const CardTitleTag = cardTitleLevel;
+
+  /**
+   * Calcul du pourcentage de remplissage des étoiles
+   * à partir de la note sur 5.
+   */
+  const rating = Number(artisan.rating) || 0;
+  const ratingPercent = Math.max(0, Math.min(100, (rating / 5) * 100));
 
   return (
     <Link
@@ -40,7 +46,7 @@ export default function ArtisanCard({ artisan, cardTitleLevel = "h3" }) {
         <img
           src={imageUrl}
           className="artisan-card__image"
-          alt={`Photo de ${artisan.name}`}
+          alt={`Illustration de ${artisan.name}`}
         />
 
         <div className="artisan-card__body">
@@ -58,9 +64,31 @@ export default function ArtisanCard({ artisan, cardTitleLevel = "h3" }) {
 
           <div
             className="artisan-card__rating"
-            aria-label={`Note de ${artisan.rating} sur 5`}
+            aria-label={`Note de ${rating} sur 5`}
           >
-            {artisan.rating}/5
+            <span className="artisan-card__rating-value">{rating}/5</span>
+
+            <span
+              className="artisan-card__stars"
+              style={{ "--rating-width": `${ratingPercent}%` }}
+              aria-hidden="true"
+            >
+              <span className="artisan-card__stars-base">
+                <i className="bi bi-star"></i>
+                <i className="bi bi-star"></i>
+                <i className="bi bi-star"></i>
+                <i className="bi bi-star"></i>
+                <i className="bi bi-star"></i>
+              </span>
+
+              <span className="artisan-card__stars-fill">
+                <i className="bi bi-star-fill"></i>
+                <i className="bi bi-star-fill"></i>
+                <i className="bi bi-star-fill"></i>
+                <i className="bi bi-star-fill"></i>
+                <i className="bi bi-star-fill"></i>
+              </span>
+            </span>
           </div>
         </div>
       </article>
