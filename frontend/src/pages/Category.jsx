@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ArtisanCard from "../components/artisans/ArtisanCard.jsx";
 import { getArtisansByCategoryId } from "../services/categoryService.js";
+import SearchForm from "../components/search/SearchForm";
 
 export default function Category() {
   const { id } = useParams();
@@ -63,23 +64,11 @@ export default function Category() {
             {artisans.length} artisan{artisans.length > 1 ? "s" : ""} trouvé{artisans.length > 1 ? "s" : ""}
           </p>
         </header>
-        <div className="row justify-content-center mb-5">
-          <div className="col-md-6">
-            <label htmlFor="search-artisan" className="form-label">
-              Rechercher un artisan
-            </label>
 
-            <div className="input-group">
-              <span className="input-group-text">
-                <i className="bi bi-search"></i>
-              </span>
-
-              <input
-                id="search-artisan"
-                type="search"
-                className="form-control"
-                placeholder="Rechercher un artisan"
-              />
+        <div className="mb-5">
+          <div className="row justify-content-center">
+            <div className="col-12 col-md-8 col-lg-6">
+              <SearchForm showButton />
             </div>
           </div>
         </div>

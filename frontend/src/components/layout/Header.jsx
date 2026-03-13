@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import LogoHeaderFooter from "../../assets/LogoHeaderFooter.png";
 import { getCategories } from "../../services/categoryService";
+import SearchForm from "../search/SearchForm";
 
 const FALLBACK_CATEGORIES = [
   { id: 1, name: "Alimentation" },
@@ -95,31 +96,7 @@ export default function Header() {
             </ul>
 
             {/* Search */}
-            <form
-              className="d-flex"
-              role="search"
-              aria-label="Rechercher un artisan"
-              onSubmit={handleSubmit}
-            >
-              <label htmlFor="search-artisan" className="visually-hidden">
-                Rechercher un artisan
-              </label>
-
-              <div className="input-group">
-                <button type="submit" className="btn btn-outline-secondary">
-                  <i className="bi bi-search" aria-hidden="true"></i>
-                </button>
-
-                <input
-                  id="search-artisan"
-                  type="search"
-                  className="form-control"
-                  placeholder="Rechercher un artisan"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
-              </div>
-            </form>
+            <SearchForm />
           </div>
         </div>
       </nav>
