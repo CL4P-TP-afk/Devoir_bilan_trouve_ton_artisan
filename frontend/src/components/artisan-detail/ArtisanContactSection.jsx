@@ -1,3 +1,11 @@
+/**
+ * Section formulaire de contact de la fiche artisan.
+ *
+ * Ce composant est purement présentationnel :
+ * - il affiche les champs
+ * - il reçoit les valeurs et handlers via props
+ * - il n'effectue aucun appel API directement
+ */
 export default function ArtisanContactSection({
   formData,
   isSubmitting,
@@ -60,20 +68,20 @@ export default function ArtisanContactSection({
         </div>
 
         {submitError && (
-          <p className="text-danger" role="alert">
+          <p className="text-danger text-center" role="alert">
             {submitError}
           </p>
         )}
 
         {submitSuccess && (
-          <p className="text-success" role="status">
+          <p className="text-success text-center" role="status">
             {submitSuccess}
           </p>
         )}
 
         <button
           type="submit"
-          className="btn btn-primary w-100"
+          className="btn btn-primary w-100 artisan-detail__submit"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Envoi en cours..." : "Envoyer"}
