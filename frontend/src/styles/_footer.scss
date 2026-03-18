@@ -1,0 +1,14 @@
+@use "./variables" as *;
+
+.site-footer {
+  background-color: $blue-100;
+}
+
+.site-footer a {
+  color: $blue-500;
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  text-decoration: underline;
+}

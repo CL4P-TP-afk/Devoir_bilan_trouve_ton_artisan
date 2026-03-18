@@ -4,6 +4,7 @@
 @use "./artisan";
 @use "./artisan-card";
 @use "./header";
+@use "./footer";
 
 
 @font-face {
@@ -32,10 +33,6 @@
 
 body {
   font-family: $font-main;
-}
-
-.site-footer {
-  background-color: $blue-100;
 }
 
 .site-main {
