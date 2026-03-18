@@ -1,16 +1,27 @@
+/**
+ * Section "À propos" et "Coordonnées" de la fiche artisan.
+ *
+ * Affiche :
+ * - la description de l'artisan
+ * - ses coordonnées (ville, email, site web)
+ */
 export default function ArtisanAboutSection({ artisan }) {
   return (
     <section className="artisan-detail__about">
-      <div className="row">
+      <div className="row g-4">
+
+        {/* Description artisan */}
         <div className="col-md-7">
           <h2>À propos</h2>
-          <p>{artisan.about}</p>
+          <p>{artisan.about || "Aucune description disponible."}</p>
         </div>
 
+        {/* Coordonnées */}
         <div className="col-md-5">
           <h2>Coordonnées</h2>
 
-          <ul className="list-unstyled">
+          <ul className="artisan-detail__contact-list list-unstyled">
+
             <li>
               <strong>Ville</strong>
               <br />
@@ -18,24 +29,32 @@ export default function ArtisanAboutSection({ artisan }) {
             </li>
 
             {artisan.email && (
-              <li className="mt-3">
+              <li>
                 <strong>Email</strong>
                 <br />
-                <a href={`mailto:${artisan.email}`}>{artisan.email}</a>
+                <a href={`mailto:${artisan.email}`}>
+                  {artisan.email}
+                </a>
               </li>
             )}
 
             {artisan.website && (
-              <li className="mt-3">
+              <li>
                 <strong>Site web</strong>
                 <br />
-                <a href={artisan.website} target="_blank" rel="noreferrer">
+                <a
+                  href={artisan.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {artisan.website}
                 </a>
               </li>
             )}
+
           </ul>
         </div>
+
       </div>
     </section>
   );

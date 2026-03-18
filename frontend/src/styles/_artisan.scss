@@ -60,3 +60,16 @@
   white-space: nowrap;
   color: $blue-500;
 }
+
+.artisan-detail__contact-list li {
+  margin-bottom: 1rem;
+}
+
+.artisan-detail__contact-list a {
+  color: $blue-500;
+  text-decoration: none;
+}
+
+.artisan-detail__contact-list a:hover {
+  text-decoration: underline;
+}
