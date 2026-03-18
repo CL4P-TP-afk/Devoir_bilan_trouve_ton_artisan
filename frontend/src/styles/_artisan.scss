@@ -19,9 +19,7 @@
   margin-bottom: 1rem;
 }
 
-.artisan-detail__meta {
-  margin-bottom: 0.75rem;
-}
+
 
 .artisan-detail__about,
 .artisan-detail__contact {
@@ -31,4 +29,34 @@
 .artisan-detail__contact-form {
   max-width: 500px;
   margin: 0 auto;
+}
+
+.artisan-detail__about {
+   background-color: $blue-100;
+}
+
+.artisan-detail__stars {
+  position: relative;
+  display: inline-flex;
+  line-height: 1;
+}
+
+.artisan-detail__stars-base,
+.artisan-detail__stars-fill {
+  display: inline-flex;
+  gap: 0.1rem;
+}
+
+.artisan-detail__stars-base {
+  color: $muted;
+}
+
+.artisan-detail__stars-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--rating-width);
+  overflow: hidden;
+  white-space: nowrap;
+  color: $blue-500;
 }
