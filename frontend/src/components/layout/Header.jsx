@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import LogoHeaderFooter from "../../assets/LogoHeaderFooter.png";
 import { getCategories } from "../../services/categoryService";
 import SearchForm from "../search/SearchForm";
 
 /**
  * Catégories de secours utilisées si l'API ne répond pas.
- * 
- * Cela permet de garder un menu fonctionnel même en cas
- * de problème côté backend.
  */
 const FALLBACK_CATEGORIES = [
   { id: 1, name: "Alimentation" },
@@ -18,16 +15,13 @@ const FALLBACK_CATEGORIES = [
 ];
 
 /**
- * Composant Header du site.
+ * Header principal du site.
  *
  * Responsabilités :
  * - afficher le logo
- * - afficher le menu de navigation principal
- * - charger dynamiquement les catégories depuis l'API
- * - afficher le formulaire de recherche global
- *
- * Le menu reste fonctionnel même si l'API tombe grâce
- * au fallback local.
+ * - afficher le menu principal
+ * - charger dynamiquement les catégories
+ * - afficher la barre de recherche globale
  */
 export default function Header() {
 
@@ -37,23 +31,8 @@ export default function Header() {
   const [categories, setCategories] = useState([]);
 
   /**
-   * Etat de la recherche (actuellement non utilisé ici
-   * car la logique est déportée dans SearchForm).
-   * Peut être supprimé si non utilisé à terme.
-   */
-  const [query, setQuery] = useState("");
-
-  /**
-   * Hook de navigation programmatique React Router.
-   */
-  const navigate = useNavigate();
-
-  /**
    * Chargement des catégories au montage du composant.
-   *
-   * En cas d'échec de l'appel API :
-   * - affichage d'une erreur console
-   * - utilisation des catégories fallback
+   * En cas d'échec → fallback local.
    */
   useEffect(() => {
     async function fetchCategories() {
@@ -69,34 +48,14 @@ export default function Header() {
     fetchCategories();
   }, []);
 
-  /**
-   * Gestion de la soumission de la recherche.
-   *
-   * - si la recherche est vide → redirection vers /recherche
-   * - sinon → redirection vers /recherche?q=mot-clé
-   */
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    const trimmedQuery = query.trim();
-
-    if (!trimmedQuery) {
-      navigate("/recherche");
-      return;
-    }
-
-    navigate(`/recherche?q=${encodeURIComponent(trimmedQuery)}`);
-  }
-
   return (
     <header className="site-header border-bottom">
 
-      {/* Barre de navigation principale */}
       <nav className="navbar navbar-expand-lg bg-white">
 
         <div className="container align-items-center">
 
-          {/* Logo du site */}
+          {/* Logo */}
           <NavLink
             className="navbar-brand d-flex align-items-center gap-2"
             to="/"
@@ -108,7 +67,7 @@ export default function Header() {
             />
           </NavLink>
 
-          {/* Bouton menu mobile (burger) */}
+          {/* Burger mobile */}
           <button
             className="navbar-toggler"
             type="button"
@@ -121,13 +80,11 @@ export default function Header() {
             <span className="navbar-toggler-icon" />
           </button>
 
-          {/* Contenu de la navigation */}
           <div className="collapse navbar-collapse" id="mainNavbar">
 
             {/* Menu principal */}
             <ul className="navbar-nav mx-lg-auto mb-2 mb-lg-0 gap-lg-3">
 
-              {/* Lien Accueil */}
               <li className="nav-item">
                 <NavLink
                   to="/"
@@ -139,7 +96,6 @@ export default function Header() {
                 </NavLink>
               </li>
 
-              {/* Catégories dynamiques */}
               {categories.map((cat) => (
                 <li key={cat.id} className="nav-item">
                   <NavLink
@@ -153,7 +109,7 @@ export default function Header() {
 
             </ul>
 
-            {/* Formulaire de recherche global */}
+            {/* Barre de recherche globale */}
             <SearchForm />
 
           </div>
