@@ -96,7 +96,7 @@ export default function ArtisanDetail() {
 
   return (
     <section className="artisan-detail">
-      <div className="container">
+
         <ArtisanHeroSection artisan={artisan} />
         <ArtisanAboutSection artisan={artisan} />
         <ArtisanContactSection
@@ -107,7 +107,7 @@ export default function ArtisanDetail() {
           onChange={handleChange}
           onSubmit={handleSubmit}
         />
-      </div>
+
     </section>
   );
 }

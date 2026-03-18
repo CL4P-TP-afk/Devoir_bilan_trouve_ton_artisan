@@ -21,63 +21,65 @@ export default function ArtisanHeroSection({ artisan }) {
   const ratingPercent = Math.max(0, Math.min(100, (rating / 5) * 100));
 
   return (
-    <div className="row align-items-center artisan-detail__hero">
+    <div className="container">
+      <div className="row align-items-center artisan-detail__hero">
 
-      <div className="col-md-6">
-        <img
-          src={imageUrl}
-          alt={`Photo de ${artisan.name}`}
-          className="artisan-detail__image"
-        />
-      </div>
+        <div className="col-md-6">
+          <img
+            src={imageUrl}
+            alt={`Photo de ${artisan.name}`}
+            className="artisan-detail__image"
+          />
+        </div>
 
-      <div className="col-md-6 artisan-detail__info">
+        <div className="col-md-6 artisan-detail__info">
 
-        <h1 className="artisan-detail__name">
-          {artisan.name}
-        </h1>
+          <h1 className="artisan-detail__name">
+            {artisan.name}
+          </h1>
 
-        <p className="artisan-detail__specialty">
-          {artisan.specialty}
-        </p>
+          <p className="artisan-detail__specialty">
+            {artisan.specialty}
+          </p>
 
-        <p className="artisan-detail__city">
-          {artisan.city}
-        </p>
+          <p className="artisan-detail__city">
+            {artisan.city}
+          </p>
 
-        <div className="artisan-detail__rating">
+          <div className="artisan-detail__rating">
 
-          <span className="artisan-detail__rating-value">
-            {rating}/5
-          </span>
-
-          <span
-            className="artisan-detail__stars"
-            style={{ "--rating-width": `${ratingPercent}%` }}
-            aria-hidden="true"
-          >
-            <span className="artisan-detail__stars-base">
-              <i className="bi bi-star"></i>
-              <i className="bi bi-star"></i>
-              <i className="bi bi-star"></i>
-              <i className="bi bi-star"></i>
-              <i className="bi bi-star"></i>
+            <span className="artisan-detail__rating-value">
+              {rating}/5
             </span>
 
-            <span className="artisan-detail__stars-fill">
-              <i className="bi bi-star-fill"></i>
-              <i className="bi bi-star-fill"></i>
-              <i className="bi bi-star-fill"></i>
-              <i className="bi bi-star-fill"></i>
-              <i className="bi bi-star-fill"></i>
+            <span
+              className="artisan-detail__stars"
+              style={{ "--rating-width": `${ratingPercent}%` }}
+              aria-hidden="true"
+            >
+              <span className="artisan-detail__stars-base">
+                <i className="bi bi-star"></i>
+                <i className="bi bi-star"></i>
+                <i className="bi bi-star"></i>
+                <i className="bi bi-star"></i>
+                <i className="bi bi-star"></i>
+              </span>
+
+              <span className="artisan-detail__stars-fill">
+                <i className="bi bi-star-fill"></i>
+                <i className="bi bi-star-fill"></i>
+                <i className="bi bi-star-fill"></i>
+                <i className="bi bi-star-fill"></i>
+                <i className="bi bi-star-fill"></i>
+              </span>
+
             </span>
 
-          </span>
+          </div>
 
         </div>
 
       </div>
-
     </div>
   );
 }
