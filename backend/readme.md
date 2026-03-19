@@ -198,6 +198,41 @@ GET /api/artisans?search=boulanger
 
 ---
 
+---
+
+### POST /api/artisans/:id/contact
+
+Permet d’envoyer un message à un artisan via le formulaire de contact.
+
+#### Paramètres
+
+- `id` (path) : identifiant de l’artisan
+
+#### Body (JSON)
+
+```
+{
+  "name": "Jean Dupont",
+  "email": "jean@email.com",
+  "message": "Bonjour, je souhaite un devis."
+}
+```
+#### Réponse
+```
+{
+  "success": true,
+  "message": "Message envoyé avec succès",
+  "messageId": "<id-du-message>",
+  "previewUrl": "https://ethereal.email/..."
+}
+```
+
+**Notes:**
+- Les emails sont envoyés via un service SMTP (Ethereal en développement)
+- Le previewUrl permet de visualiser l’email sans envoi réel
+
+---
+
 ## 📖 Documentation API
 
 La documentation complète de l’API est disponible via Swagger :
