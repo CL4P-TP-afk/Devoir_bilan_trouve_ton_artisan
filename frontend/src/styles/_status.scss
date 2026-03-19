@@ -1,0 +1,23 @@
+@use "./variables" as *;
+
+.status-page {
+  padding: 5rem 0;
+}
+
+.status-page__code {
+  font-size: 5rem;
+  font-weight: 700;
+  color: $blue-500;
+  margin-bottom: 1rem;
+}
+
+.status-page__title {
+  font-size: 2rem;
+  color: $blue-700;
+}
+
+.status-page__text {
+  color: $muted;
+  max-width: 500px;
+  margin: 0 auto;
+}

@@ -1,20 +1,27 @@
 import { Link } from "react-router-dom";
 
+/**
+ * Page 404 - affichée lorsqu'aucune route ne correspond.
+ */
 export default function NotFound() {
   return (
-    <section className="py-5">
+    <section className="status-page status-page--notfound">
       <div className="container text-center">
-        <h1 className="mb-3">404</h1>
 
-        <h2 className="mb-4">Page non trouvée</h2>
+        <p className="status-page__code">404</p>
 
-        <p className="mb-5">
+        <h1 className="status-page__title mb-3">
+          Page non trouvée
+        </h1>
+
+        <p className="status-page__text mb-4">
           La page que vous recherchez n’existe pas ou a été déplacée.
         </p>
 
-        <Link to="/" className="btn btn-outline-primary">
+        <Link to="/" className="btn btn-primary">
           Retour à l'accueil
         </Link>
+
       </div>
     </section>
   );
