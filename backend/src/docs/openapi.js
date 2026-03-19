@@ -226,6 +226,83 @@ export const openapiSpec = {
       },
     },
 
+    "/api/artisans/{id}/contact": {
+      post: {
+        tags: ["Artisans"],
+        summary: "Envoyer un message à un artisan",
+        description: "Permet d'envoyer un message à un artisan via le formulaire de contact.",
+        parameters: [
+          {
+            name: "id",
+            in: "path",
+            required: true,
+            schema: { type: "integer", minimum: 1 },
+            description: "ID de l'artisan",
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["name", "email", "message"],
+                properties: {
+                  name: {
+                    type: "string",
+                    example: "Jean Dupont",
+                  },
+                  email: {
+                    type: "string",
+                    example: "jean@email.com",
+                  },
+                  message: {
+                    type: "string",
+                    example: "Bonjour, je souhaite un devis.",
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "Message envoyé avec succès",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: { type: "boolean" },
+                    message: { type: "string" },
+                    messageId: { type: "string" },
+                    previewUrl: { type: "string" },
+                  },
+                  required: ["success", "message"],
+                },
+              },
+            },
+          },
+          400: {
+            description: "Données invalides",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          500: {
+            description: "Erreur serveur",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+        },
+      },
+    },
+
     "/api/artisans": {
       get: {
         tags: ["Artisans"],
