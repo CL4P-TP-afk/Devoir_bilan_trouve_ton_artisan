@@ -423,6 +423,7 @@ Les endpoints suivants ont été implémentés :
 - `GET /api/artisans/featured`
 - `GET /api/artisans/:id`
 - `GET /api/artisans?search=...`
+- `POST /api/artisans/:id/contact`
 
 Ces routes permettent :
 
@@ -431,6 +432,7 @@ Ces routes permettent :
 - d'afficher les artisans mis en avant
 - d'afficher une fiche artisan détaillée
 - d'effectuer une recherche multi-critères.
+
 
 ---
 
@@ -540,26 +542,61 @@ Ces mesures permettent d’améliorer la robustesse et la sécurité globale de 
 
 ---
 
-## 9. Développement front-end – à compléter
+## 9. Développement front-end 
+
+Le développement du front-end a été réalisé avec la bibliothèque **React**, en utilisant l’outil de build **Vite**.
+
+L’application a été conçue selon une architecture modulaire, avec une séparation claire des responsabilités :
+
+- les **pages**, responsables de la gestion des routes et de l’orchestration des données  
+- les **composants de section**, correspondant aux différentes parties d’une page  
+- les **composants réutilisables**, utilisés dans plusieurs contextes (cartes artisans, formulaire de recherche, etc.)  
+- les **services**, chargés de la communication avec l’API  
+
+Cette organisation permet de structurer le projet de manière lisible et évolutive.
+
+Le routage de l’application est géré à l’aide de **React Router**, permettant la navigation entre les différentes pages :
+
+- page d’accueil  
+- page catégorie  
+- page de résultats de recherche  
+- page détail artisan  
+- pages d’état (404, pages en construction)  
+
+Les données sont récupérées depuis l’API via des services dédiés.  
+Une fonction centralisée permet de gérer les appels HTTP et les erreurs, assurant ainsi une meilleure cohérence dans l’ensemble de l’application.
+
+Une attention particulière a été portée à l’expérience utilisateur :
+
+- affichage d’états de chargement  
+- gestion des erreurs  
+- messages en cas d’absence de résultats  
+- fallback en cas d’indisponibilité de l’API  
+
+Les styles ont été réalisés à l’aide de **Sass**, en s’appuyant sur les maquettes Figma fournies.  
+L’organisation des fichiers de styles suit également une logique modulaire (variables, layout, composants).
+
+Enfin, un formulaire de contact a été implémenté, permettant d’envoyer un message à un artisan via un endpoint dédié du backend.
+
 
 ---
 
-## 10. Difficultés rencontrées et solutions – à compléter
+## 10. Difficultés rencontrées et solutions
 
 ### 10.1 Conflit de collation MySQL lors des requêtes de recherche
 
-Lors de l’exécution des requêtes de tests SQL, une erreur MySQL est apparue :
+Lors de l’exécution des requêtes SQL de recherche, une erreur MySQL est apparue :
 ```
-#1267 - Illegal mix of collations for operation 'like'
+# 1267 - Illegal mix of collations for operation 'like'
 ```
 
 Cette erreur survenait lors de l’utilisation de l’opérateur LIKE sur des champs texte de la base de données.
 
 Après analyse, le problème provenait d’un **mélange de collations** entre :
 
-- la base de données
-- certaines tables
-- la session MySQL.
+- la base de données  
+- certaines tables  
+- la session MySQL  
 
 Certaines parties du schéma utilisaient :
 ```
@@ -569,7 +606,8 @@ alors que d’autres utilisaient :
 ```
 utf8mb4_unicode_ci
 ```
-MySQL refusant de comparer des chaînes de caractères utilisant des collations différentes, les requêtes de recherche échouaient.
+
+MySQL refusant de comparer des chaînes utilisant des collations différentes, les requêtes de recherche échouaient.
 
 #### Solution mise en place
 
@@ -578,108 +616,279 @@ La base de données a été **standardisée** afin d’utiliser une configuratio
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci
 ```
-
 Cette standardisation a été appliquée :
 
-- à la base de données
-- aux tables
-- aux scripts SQL de création (00_create_database.sql et 02_schema.sql).
-
-Après cette correction, les requêtes utilisant LIKE fonctionnent normalement.
+- à la base de données  
+- aux tables  
+- aux scripts SQL de création  
 
 #### Justification technique
-
-Le charset utf8mb4 permet de supporter l’ensemble des caractères Unicode modernes (accents, caractères internationaux, emojis) et constitue aujourd’hui le standard pour les applications web.
-
-La collation utf8mb4_unicode_ci définit les règles de comparaison et de tri des chaînes de caractères selon les standards Unicode. Elle permet notamment :
-
-- une gestion correcte des accents
-- une comparaison insensible à la casse,
-- un tri alphabétique cohérent.
-
-Cette configuration est couramment utilisée dans les applications professionnelles (SaaS, e-commerce, systèmes métiers, applications bancaires) afin d’assurer la cohérence linguistique et la stabilité des requêtes SQL.
+Le charset utf8mb4 permet de supporter l’ensemble des caractères Unicode modernes et constitue aujourd’hui le standard pour les applications web.
+La collation utf8mb4_unicode_ci garantit une comparaison cohérente des chaînes (gestion des accents, insensibilité à la casse, tri correct).
 
 #### Bonnes pratiques retenues
 
-Cette difficulté a permis de mettre en évidence l’importance de :
-
-- définir une collation cohérente dès la création de la base
-- éviter les mélanges de collations dans un projet,
-- standardiser le charset et la collation au niveau de la base et des tables
-- privilégier utf8mb4_unicode_ci pour les applications web modernes.
-
-Cette correction garantit désormais un comportement homogène de la base de données et évite les erreurs de type :
-```
-Illegal mix of collations for operation 'like'
-```
-### 10.2 Sécurité et gestion des secrets
-
-Lors du développement du backend, une attention particulière a été portée à la gestion des secrets.
-
-Le script `01_create_user_and_grants.sql` contient un mot de passe placeholder destiné à être modifié localement avant exécution. Aucun mot de passe réel n’est versionné dans le dépôt.
-
-Les identifiants de connexion à la base de données sont définis dans un fichier `.env`, non versionné grâce au `.gitignore`.
-
-Un fichier `.env.example` est fourni afin d’indiquer les variables nécessaires sans exposer de données sensibles.
-
-Cette démarche respecte les bonnes pratiques de séparation entre :
-- code versionné,
-- configuration locale,
-- secrets d’exécution.    
+- définir une collation cohérente dès la création de la base  
+- éviter les mélanges de collations  
+- standardiser charset et collation au niveau global  
 
 ---
 
-### 10.3 Vulnérabilités npm liées à Swagger
+### 10.2 Cohérence entre le front-end, le back-end et la documentation
 
-Lors de l’installation des dépendances nécessaires à la documentation de l’API avec Swagger, l’outil `npm audit` a signalé plusieurs vulnérabilités de sécurité.
+Lors du développement, une incohérence a été identifiée entre :
 
-Ces alertes provenaient d’une dépendance indirecte utilisée par la bibliothèque `swagger-jsdoc`, qui utilise une version ancienne du module `glob`.
+- les données renvoyées par l’API  
+- leur utilisation dans le front-end  
+- leur description dans la documentation Swagger  
 
-Cette situation est connue dans l’écosystème Node.js et ne représente pas nécessairement un risque direct pour l’application lorsque l’outil est utilisé uniquement pour la documentation.
+Le endpoint de recherche renvoyait un objet structuré :
+```
+{
+page,
+limit,
+results,
+data: [...]
+}
+```
 
-#### Solution retenue
+alors que la documentation Swagger décrivait initialement un simple tableau.
 
-Afin de limiter l’exposition :
+#### Solution mise en place
 
-- Swagger est utilisé uniquement pour la **documentation de développement**
-- les dépendances critiques du backend restent séparées
-- aucune donnée sensible n’est exposée via la documentation.
+- analyse de la structure réelle des réponses API  
+- adaptation du front-end pour exploiter correctement les données  
+- mise à jour de la documentation OpenAPI  
 
-Cette démarche permet de conserver l’outil de documentation tout en restant attentif aux alertes de sécurité signalées par l’écosystème npm.
+#### Justification technique
+
+La cohérence entre backend, frontend et documentation est essentielle pour :
+
+- éviter les erreurs d’intégration  
+- faciliter la maintenance  
+- permettre une compréhension rapide de l’API  
+
+#### Bonnes pratiques retenues
+
+- documenter les réponses réelles de l’API  
+- maintenir Swagger à jour  
+- centraliser la logique d’appel API côté frontend  
 
 ---
 
-## 11. Compétences acquises – à compléter
+### 10.3 Mise en place du formulaire de contact
 
-La réalisation de ce projet a permis de développer plusieurs compétences techniques et méthodologiques :
+L’ajout du formulaire de contact a nécessité la création d’un endpoint backend et l’intégration d’un système d’envoi d’email.
 
-### Conception
+Une erreur d’authentification SMTP est apparue :
+```
+535 Authentication failed
+```
 
-- analyse d’un cahier des charges
-- conception d’interfaces UX/UI avec Figma
-- création d’un design system
-- conception responsive mobile-first
+Cette erreur était liée à une mauvaise configuration des identifiants ou du service SMTP.
 
-### Base de données
+#### Solution mise en place
 
-- modélisation MCD / MLD
-- conception de schéma relationnel
-- création de scripts SQL structurés
-- gestion de l’intégrité des données
+- utilisation du service **Ethereal Email** pour simuler l’envoi  
+- vérification des identifiants SMTP  
+- mise en place d’un retour utilisateur en cas d’erreur  
 
-### Backend
+#### Justification technique
 
-- création d’une API REST avec Express
-- utilisation de Sequelize pour l’accès aux données
-- mise en place de middlewares
-- gestion centralisée des erreurs
-- pagination des résultats
-- documentation d’API avec Swagger
+Ethereal permet de tester un système d’envoi d’emails sans dépendre d’un service réel, ce qui facilite le développement et le débogage.
 
-### Méthodologie
+#### Bonnes pratiques retenues
 
-- utilisation de Git et GitHub
-- organisation du travail avec issues et branches
-- rédaction de documentation technique
+- ne pas utiliser de service SMTP réel en phase de développement  
+- isoler la logique d’envoi d’email dans le backend  
+- prévoir une gestion des erreurs côté utilisateur  
 
+---
+
+### 10.4 Gestion des layouts et du responsive
+
+Des difficultés ont été rencontrées dans la mise en page de certaines pages, notamment la fiche artisan.
+
+L’utilisation du conteneur Bootstrap (`container`) empêchait certains éléments (comme les backgrounds) de s’étendre sur toute la largeur de l’écran.
+
+#### Solution mise en place
+
+- séparation entre sections pleine largeur et contenu centré  
+- utilisation de conteneurs internes uniquement pour le contenu  
+- adaptation des classes CSS  
+
+#### Justification technique
+
+Bootstrap limite la largeur via `container`, ce qui nécessite une structuration adaptée pour gérer des sections en pleine largeur.
+
+#### Bonnes pratiques retenues
+
+- distinguer layout global et contenu interne  
+- utiliser des sections pleine largeur pour les backgrounds  
+- tester le rendu sur plusieurs tailles d’écran  
+
+---
+
+### 10.5 Structuration et réutilisation des composants React
+
+La structuration initiale des pages rendait certaines parties difficiles à maintenir.
+
+Par exemple, plusieurs sections étaient directement intégrées dans les pages principales.
+
+#### Solution mise en place
+
+- découpage en composants spécialisés (Hero, About, Contact, etc.)  
+- organisation en dossiers par fonctionnalité  
+- utilisation de props pour rendre les composants réutilisables  
+
+#### Justification technique
+
+Une architecture modulaire permet :
+
+- une meilleure lisibilité du code  
+- une réutilisation facilitée  
+- une maintenance simplifiée  
+
+#### Bonnes pratiques retenues
+
+- séparer pages, sections et composants  
+- éviter les composants trop volumineux  
+- favoriser la réutilisabilité  
+
+---
+
+### 10.6 Gestion des erreurs et expérience utilisateur
+
+Certains cas d’erreur n’étaient pas correctement gérés, notamment lorsque l’API était indisponible.
+
+Par exemple, un message technique comme "Failed to fetch" pouvait être affiché à l’utilisateur.
+
+#### Solution mise en place
+
+- mise en place de messages utilisateurs compréhensibles  
+- gestion des états (loading, error, empty state)  
+- ajout de fallback pour certaines données  
+
+#### Justification technique
+
+Un utilisateur ne doit pas être exposé à des messages techniques internes.
+
+#### Bonnes pratiques retenues
+
+- traduire les erreurs techniques en messages utilisateurs  
+- prévoir des états pour chaque situation  
+- tester les cas d’échec API  
+
+---
+
+### 10.7 Vulnérabilités npm liées aux dépendances
+
+Lors de l’installation de certaines dépendances (notamment Swagger et Nodemailer), l’outil `npm audit` a signalé des vulnérabilités.
+
+Ces vulnérabilités provenaient de dépendances indirectes.
+
+#### Solution mise en place
+
+- exécution de `npm audit fix` lorsque possible  
+- analyse des vulnérabilités  
+- limitation de l’utilisation des outils concernés à l’environnement de développement  
+
+#### Justification technique
+
+Certaines vulnérabilités sont liées à l’écosystème Node.js et ne représentent pas toujours un risque direct en production.
+
+#### Bonnes pratiques retenues
+
+- surveiller régulièrement les dépendances  
+- limiter l’exposition des outils de développement  
+- maintenir les versions à jour  
+
+---
+
+### 10.8 Sécurité et gestion des secrets
+
+La gestion des identifiants sensibles a été un point d’attention durant le développement.
+
+#### Solution mise en place
+
+- utilisation d’un fichier `.env` non versionné  
+- mise en place d’un fichier `.env.example`  
+- utilisation d’un utilisateur SQL avec privilèges limités  
+
+#### Justification technique
+
+La séparation entre code et configuration permet de sécuriser les données sensibles.
+
+#### Bonnes pratiques retenues
+
+- ne jamais versionner de secrets  
+- utiliser des variables d’environnement  
+- appliquer le principe du moindre privilège  
+
+---
+
+## 11. Compétences acquises
+
+La réalisation de ce projet a permis de développer des compétences techniques et méthodologiques dans l’ensemble des couches d’une application web, du frontend au backend.
+
+### 11.1 Conception
+
+- analyse d’un cahier des charges et identification des besoins fonctionnels  
+- conception d’interfaces utilisateur avec Figma  
+- création d’un design system (couleurs, typographie, composants)  
+- conception d’interfaces responsive selon une approche mobile-first  
+
+---
+
+### 11.2 Base de données
+
+- modélisation de la base de données (MCD / MLD)  
+- conception d’un schéma relationnel cohérent  
+- création de scripts SQL structurés  
+- gestion de l’intégrité des données et des relations entre entités  
+- compréhension des notions de charset et de collation  
+
+---
+
+### 11.3 Backend
+
+- conception et développement d’une API REST avec Node.js et Express  
+- utilisation de l’ORM Sequelize pour l’accès aux données  
+- mise en place d’une architecture modulaire (routes, controllers, models)  
+- gestion centralisée des erreurs via des middlewares  
+- implémentation de la pagination et des filtres de recherche  
+- documentation de l’API avec Swagger (OpenAPI)  
+- mise en place d’un endpoint de contact avec envoi d’email  
+
+---
+
+### 11.4 Frontend
+
+- développement d’une application avec React  
+- mise en place du routage avec React Router  
+- structuration du projet en composants réutilisables  
+- séparation des responsabilités (pages, sections, composants, services)  
+- consommation d’une API REST et gestion des états (loading, error, empty state)  
+- gestion des formulaires et des interactions utilisateur  
+- amélioration de l’expérience utilisateur (UX)  
+- organisation des styles avec Sass (SCSS)  
+
+---
+
+### 11.5 Méthodologie et outils
+
+- utilisation de Git et GitHub pour le versionnement du code  
+- gestion du projet avec issues, branches et pull requests  
+- rédaction de documentation technique (README, Swagger, rapport)  
+- gestion des variables d’environnement (.env)  
+- résolution de problèmes techniques et débogage  
+
+---
+
+### 11.6 Compétences transversales
+
+- capacité d’analyse et de résolution de problèmes  
+- structuration et organisation d’un projet complet  
+- compréhension du fonctionnement d’une architecture fullstack  
+- amélioration continue du code et de l’expérience utilisateur  
 ---
