@@ -315,15 +315,38 @@ export const openapiSpec = {
             schema: { type: "string" },
             description: "Mot-clé (nom, ville, spécialité)",
           },
+          {
+            name: "page",
+            in: "query",
+            required: false,
+            schema: { type: "integer", minimum: 1, default: 1 },
+            description: "Numéro de page",
+          },
+          {
+            name: "limit",
+            in: "query",
+            required: false,
+            schema: { type: "integer", minimum: 1, maximum: 100, default: 25 },
+            description: "Nombre maximum de résultats par page",
+          },
         ],
         responses: {
           200: {
-            description: "Résultats de recherche",
+            description: "Résultats de recherche paginés",
             content: {
               "application/json": {
                 schema: {
-                  type: "array",
-                  items: { $ref: "#/components/schemas/ArtisanCard" },
+                  type: "object",
+                  properties: {
+                    page: { type: "integer", example: 1 },
+                    limit: { type: "integer", example: 25 },
+                    results: { type: "integer", example: 3 },
+                    data: {
+                      type: "array",
+                      items: { $ref: "#/components/schemas/ArtisanCard" },
+                    },
+                  },
+                  required: ["page", "limit", "results", "data"],
                 },
               },
             },
@@ -331,11 +354,13 @@ export const openapiSpec = {
           503: {
             description: "Base de données indisponible",
             content: {
-              "application/json": { schema: { $ref: "#/components/schemas/Error" } },
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
             },
           },
         },
       },
     },
-  },
+  },  
 };

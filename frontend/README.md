@@ -269,7 +269,7 @@ API utilisée :
 ---
 
 ## 📈 Améliorations possibles
-- pagination des résultats
+- exploitation frontend de la pagination déjà prévue côté API
 - filtres avancés (ville, note, spécialité)
 - optimisation des performances
 - amélioration accessibilité (a11y)
