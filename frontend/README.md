@@ -2,19 +2,31 @@
 
 Frontend React de la plateforme **Trouve ton artisan**.
 
-Cette application permet aux utilisateurs de :
-- consulter les artisans mis en avant
-- parcourir les catégories d’artisans
-- accéder aux fiches détaillées des artisans
-- contacter un artisan
-
-Le frontend consomme une **API REST Node.js / Express** connectée à une base de données **MySQL**.
+Ce projet a été réalisé dans le cadre d’un projet de formation avec une approche volontairement professionnelle :
+- architecture modulaire
+- séparation des responsabilités
+- connexion à une API REST réelle
+- gestion des erreurs et fallback UX
 
 ---
 
-## Stack technique
+## 🎯 Objectif du projet
 
-Frontend :
+L’application permet aux utilisateurs de :
+
+- consulter les artisans mis en avant
+- parcourir les artisans par catégorie
+- rechercher un artisan par mot-clé
+- consulter la fiche détaillée d’un artisan
+- contacter un artisan via un formulaire
+
+Le frontend consomme une **API REST Node.js / Express** connectée à une base **MySQL**.
+
+---
+
+## 🧱 Stack technique
+
+### Frontend
 
 - React
 - Vite
@@ -23,7 +35,7 @@ Frontend :
 - Bootstrap
 - Bootstrap Icons
 
-Backend (API consommée) :
+### Backend (API consommée)
 
 - Node.js
 - Express
@@ -57,7 +69,7 @@ Le site sera accessible sur :
 
 ---
 
-## Configuration
+## ⚙️ Configuration
 
 Le frontend communique avec l’API via la variable :
 ```
@@ -67,14 +79,14 @@ Exemple :
 ```
 VITE_API_URL=http://localhost:3001/api
 ```
-Si la variable n’est pas définie, l’application utilise :
+Fallback par défaut :
 ```
 [http://localhost:3001/api](http://localhost:3001/api)
 ```
 
 ---
 
-## Architecture du projet
+## 🗂️ Architecture du projet
 ```
 src
 ├─ app
@@ -88,21 +100,31 @@ src
 │  ├─ artisans
 │  │  └─ ArtisanCard.jsx
 │  │
+│  ├─ artisan-detail
+│  │  ├─ ArtisanHeroSection.jsx
+│  │  ├─ ArtisanAboutSection.jsx
+│  │  └─ ArtisanContactSection.jsx
+│  │
 │  ├─ home
 │  │  ├─ FeaturedArtisansSection.jsx
 │  │  ├─ HeroSection.jsx
 │  │  └─ StepsSection.jsx
 │  │
-│  └─ layout
-│     ├─ Footer.jsx
-│     ├─ Header.jsx
-│     └─ Layout.jsx
+│  ├─ layout
+│  │  ├─ Header.jsx
+│  │  ├─ Footer.jsx
+│  │  └─ Layout.jsx
+│  │
+│  └─ search
+│     └─ SearchForm.jsx
 │
 ├─ pages
-│  ├─ ArtisanDetail.jsx
-│  ├─ Category.jsx
 │  ├─ Home.jsx
-│  └─ NotFound.jsx
+│  ├─ Category.jsx
+│  ├─ ArtisanDetail.jsx
+│  ├─ SearchResults.jsx
+│  ├─ NotFound.jsx
+│  └─ ConstructionPage.jsx
 │
 ├─ services
 │  ├─ api.js
@@ -110,13 +132,19 @@ src
 │  └─ categoryService.js
 │
 └─ styles
-   ├─ _home.scss
    ├─ _variables.scss
+   ├─ _header.scss
+   ├─ _footer.scss
+   ├─ _home.scss
+   ├─ _category.scss
+   ├─ _artisan.scss
+   ├─ _artisan-card.scss
+   ├─ _status.scss
    └─ main.scss
 ```
 ---
 
-## Architecture React utilisée
+## 🧠 Architecture React 
 
 L'application suit une architecture par responsabilités :
 ```
@@ -141,20 +169,23 @@ Cette organisation permet :
 - une meilleure réutilisabilité des composants
 - une séparation claire entre UI et logique métier
 - une maintenance facilitée
+- la scalabilité
 
 ---
 
-## Communication avec l'API
-Les appels HTTP sont centralisés dans le dossier services.
-
-Le fichier api.js expose une fonction :
+## 🔌 Communication avec l'API
+Tous les appels HTTP sont centralisés dans :
+```
+services/api.js
+```
+Fonction principale :
 ```
 apiFetch()
 ```
-Cette fonction :
-- construit l’URL complète de l’API
-- exécute les requêtes HTTP
-- centralise la gestion des erreurs
+Responsabilités :
+- construire les URL API
+- gérer les requêtes HTTP
+- centraliser les erreurs
 
 Exemples de services :
 - artisans.service.js
@@ -162,74 +193,89 @@ Exemples de services :
 
 Exemples d’endpoints utilisés :
 ```
+GET /api/artisans
 GET /api/artisans/featured
 GET /api/categories
+GET /api/artisans/:id
+POST /api/artisans/:id/contact
 ```
 Les services utilisent cette fonction pour récupérer les données.
 
 ---
 
-## Gestion des erreurs
+## ⚠️ Gestion des erreurs
 
-Certaines parties critiques de l'interface utilisent un **fallback local**.
+Le projet inclut plusieurs stratégies UX :
 
-Exemple :
+- fallback local pour les catégories si l’API échoue
+- messages utilisateurs clairs en cas d’erreur
+- gestion des états :
+   -   loading
+   -   empty
+   -   error
 
-- le menu des catégories est chargé depuis l'API
-- en cas d'erreur API, un fallback local permet de conserver un menu fonctionnel
-
-Cela évite une interface inutilisable si l’API est indisponible.
+Objectif : interface toujours fonctionnelle même en cas de problème backend
 
 ---
 
-## Styles et design system
+## 🎨 Styles & design system
 
-Les styles sont organisés avec Sass :
+Organisation avec Sass :
 ```
-styles
- ├─ main.scss
- ├─ _variables.scss
- └─ _home.scss
+styles/
 ```
+- variables globales (_variables.scss)
+- styles par page / composant
+- séparation claire des responsabilités
 
-Le design system inclut :
-- variables de couleurs
+Respect des maquettes Figma :
+- couleurs
 - typographie
-- composants stylés
-
-Les styles sont inspirés des maquettes Figma.
+- layout responsive
 
 ---
 
-## Bonnes pratiques appliquées
-
+## ✅ Bonnes pratiques appliquées
+- architecture modulaire
 - séparation pages / composants / services
-- composants réutilisables (ArtisanCard)
-- appel API centralisé
-- styles organisés avec Sass
-- routing géré avec React Router
-- layout global (Header / Footer) partagé entre les pages
+- composants réutilisables
+- centralisation des appels API
+- gestion des erreurs UX
+- fallback en cas de panne API
+- routing propre avec React Router
+- layout global partagé (Header / Footer)
+- composants découplés (pages → sections)
 ---
 
-## Lien avec le backend
+## 🔗 Lien avec le backend
 
-Le frontend consomme l'API :
-
+API utilisée :
+```
 [http://localhost:3001/api](http://localhost:3001/api)
-
-Endpoints principaux :
-```
-GET /api/artisans
-GET /api/artisans/featured
-GET /api/categories
 ```
 ---
 
-## Roadmap
-Fonctionnalités en cours de développement :
+## 🧩 Fonctionnalités implémentées
 
-- page catégorie
+- page d’accueil dynamique
+- affichage des artisans mis en avant
+- navigation par catégories
 - page détail artisan
-- recherche d'artisans
-- formulaire de contact
-- améliorations UX
+- formulaire de contact fonctionnel (email via backend)
+- moteur de recherche avec page de résultats
+- gestion des erreurs utilisateur
+- pages 404 et pages en construction
+
+---
+
+## 📈 Améliorations possibles
+- pagination des résultats
+- filtres avancés (ville, note, spécialité)
+- optimisation des performances
+- amélioration accessibilité (a11y)
+- tests unitaires
+
+---
+
+## 👨‍💻 Auteur
+Projet réalisé dans le cadre d’une formation développeur web, avec une approche orientée pratiques professionnelles modernes.
