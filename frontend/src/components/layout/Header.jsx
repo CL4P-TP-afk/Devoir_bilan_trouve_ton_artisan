@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import LogoHeaderFooter from "../../assets/LogoHeaderFooter.png";
 import { getCategories } from "../../services/categoryService";
 import SearchForm from "../search/SearchForm";
 
+/**
+ * Catégories de secours utilisées si l'API ne répond pas.
+ */
 const FALLBACK_CATEGORIES = [
   { id: 1, name: "Alimentation" },
   { id: 2, name: "Bâtiment" },
@@ -11,11 +14,26 @@ const FALLBACK_CATEGORIES = [
   { id: 4, name: "Services" },
 ];
 
+/**
+ * Header principal du site.
+ *
+ * Responsabilités :
+ * - afficher le logo
+ * - afficher le menu principal
+ * - charger dynamiquement les catégories
+ * - afficher la barre de recherche globale
+ */
 export default function Header() {
-  const [categories, setCategories] = useState([]);
-  const [query, setQuery] = useState("");
-  const navigate = useNavigate();
 
+  /**
+   * Liste des catégories récupérées depuis l'API.
+   */
+  const [categories, setCategories] = useState([]);
+
+  /**
+   * Chargement des catégories au montage du composant.
+   * En cas d'échec → fallback local.
+   */
   useEffect(() => {
     async function fetchCategories() {
       try {
@@ -30,25 +48,18 @@ export default function Header() {
     fetchCategories();
   }, []);
 
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    const trimmedQuery = query.trim();
-
-    if (!trimmedQuery) {
-      navigate("/recherche");
-      return;
-    }
-
-    navigate(`/recherche?q=${encodeURIComponent(trimmedQuery)}`);
-  }
-
   return (
     <header className="site-header border-bottom">
+
       <nav className="navbar navbar-expand-lg bg-white">
+
         <div className="container align-items-center">
+
           {/* Logo */}
-          <NavLink className="navbar-brand d-flex align-items-center gap-2" to="/">
+          <NavLink
+            className="navbar-brand d-flex align-items-center gap-2"
+            to="/"
+          >
             <img
               src={LogoHeaderFooter}
               alt="Logo Trouve ton artisan"
@@ -70,8 +81,10 @@ export default function Header() {
           </button>
 
           <div className="collapse navbar-collapse" id="mainNavbar">
-            {/* Menu */}
+
+            {/* Menu principal */}
             <ul className="navbar-nav mx-lg-auto mb-2 mb-lg-0 gap-lg-3">
+
               <li className="nav-item">
                 <NavLink
                   to="/"
@@ -93,10 +106,12 @@ export default function Header() {
                   </NavLink>
                 </li>
               ))}
+
             </ul>
 
-            {/* Search */}
+            {/* Barre de recherche globale */}
             <SearchForm />
+
           </div>
         </div>
       </nav>

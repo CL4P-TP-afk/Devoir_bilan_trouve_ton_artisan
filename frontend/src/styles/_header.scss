@@ -1,0 +1,52 @@
+@use "./variables" as *;
+
+.site-header {
+  background-color: $white;
+}
+
+/* liens menu */
+
+.navbar .nav-link {
+  color: $text-main;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+/* hover */
+
+.navbar .nav-link:hover {
+  color: $blue-700;
+}
+
+/* lien actif */
+
+.navbar .nav-link.active {
+  color: $blue-700;
+  font-weight: 600;
+}
+
+/* soulignement animé */
+
+.navbar .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 2px;
+  background-color: $blue-700;
+  transition: width 0.25s ease;
+}
+
+/* hover underline */
+
+.navbar .nav-link:hover::after {
+  width: 100%;
+}
+
+/* active underline */
+
+.navbar .nav-link.active::after {
+  width: 100%;
+}

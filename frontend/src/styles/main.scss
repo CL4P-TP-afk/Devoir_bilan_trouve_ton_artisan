@@ -3,6 +3,9 @@
 @use "./category";
 @use "./artisan";
 @use "./artisan-card";
+@use "./header";
+@use "./footer";
+@use "./status";
 
 
 @font-face {
@@ -31,10 +34,6 @@
 
 body {
   font-family: $font-main;
-}
-
-.site-footer {
-  background-color: $blue-100;
 }
 
 .site-main {

@@ -7,7 +7,7 @@ export default function HeroSection() {
   const navigate = useNavigate();
 
   return (
-    <section className="hero-section py-5 text-center">
+    <section className="hero-section text-center">
         <div className="container">
 
             <h1 className="hero-title mb-3">

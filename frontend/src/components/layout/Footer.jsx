@@ -25,8 +25,9 @@ export default function Footer() {
           </div>
 
           {/* Coordonnées */}
-          <div className="col-12 col-lg-4 text-lg-end">
+          <div className="col-12 col-lg-4 text-center text-lg-start">
             <h2 className="mb-2">Coordonnées</h2>
+
             <address className="m-0">
               Antenne Région Auvergne-Rhône-Alpes<br />
               101 cours Charlemagne<br />
