@@ -2,13 +2,17 @@
  * Routes liées aux artisans.
  *
  * Ce module définit les endpoints REST permettant
- * de consulter et rechercher les artisans.
+ * de consulter, rechercher et contacter un artisan.
  */
 import { Router } from "express";
-import { getFeaturedArtisans, getArtisanById, searchArtisans } from "../controllers/artisans.controller.js";
+import {
+  getFeaturedArtisans,
+  getArtisanById,
+  searchArtisans,
+  sendContactMessage,
+} from "../controllers/artisans.controller.js";
 import { catchAsync } from "../middlewares/catchAsync.js";
 import { validateIdParam } from "../middlewares/validateIdParam.js";
-import { sendContactMessage } from "../controllers/artisans.controller.js";
 
 const router = Router();
 
@@ -43,11 +47,20 @@ router.get("/", catchAsync(searchArtisans));
  * Retourne la fiche détaillée d'un artisan.
  *
  * Middlewares :
- * - validateIdParam : vérifie que l'identifiant est un entier positif.
- * - catchAsync : capture les erreurs async.
+ * - validateIdParam : vérifie que l'identifiant est un entier positif
+ * - catchAsync : capture les erreurs async
  */
 router.get("/:id", validateIdParam("id"), catchAsync(getArtisanById));
 
-export default router;
-
+/**
+ * Route : POST /api/artisans/:id/contact
+ *
+ * Permet d'envoyer un message à propos d'un artisan précis.
+ *
+ * Middlewares :
+ * - validateIdParam : vérifie que l'identifiant transmis est valide
+ * - catchAsync : transmet les erreurs async au gestionnaire global
+ */
 router.post("/:id/contact", validateIdParam("id"), catchAsync(sendContactMessage));
+
+export default router;
