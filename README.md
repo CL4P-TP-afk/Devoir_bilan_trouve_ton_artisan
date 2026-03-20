@@ -4,7 +4,7 @@
 
 Projet fullstack réalisé dans le cadre de ma formation développeur web.
 
-L'objectif de l'application est de permettre aux utilisateurs de trouver facilement un artisan local à partir de sa catégorie ou d'une recherche.
+L'objectif de l'application est de permettre aux utilisateurs de trouver facilement un artisan local à partir de sa catégorie ou via une recherche multi-critères.
 
 Fonctionnalités principales :
 
@@ -23,7 +23,7 @@ Fonctionnalités principales :
 - ✅ Scripts SQL (création, seed, tests)
 - ✅ API REST Node.js / Express
 - ✅ Documentation API Swagger (OpenAPI)
-- ⏳ Frontend React (en cours)
+- ✅ Frontend React (application complète)
 
 ---
 
@@ -35,11 +35,12 @@ Fonctionnalités principales :
 - Express
 - MySQL / MariaDB
 - Sequelize (ORM)
-- mysql2 (driver utilisé par Sequelize)
+- mysql2
 - Swagger UI (OpenAPI)
 - dotenv
 - cors
 - morgan (logs HTTP)
+- nodemailer (formulaire de contact)
 
 ---
 
@@ -55,103 +56,147 @@ Fonctionnalités principales :
 
 - React
 - React Router
+- Vite
+- Sass (SCSS)
 - Bootstrap
-- Sass
+- Bootstrap Icons
 
 ---
 
 ## 📂 Structure du projet
-### 🧠 Architecture backend
-
-L'API suit une architecture classique **Express MVC** :
-
-- **routes** : définition des endpoints API
-- **controllers** : logique métier
-- **models** : modèles Sequelize représentant les tables
-- **middlewares** : validation et gestion des erreurs
-- **db** : configuration de la connexion à la base
-
-Sequelize est utilisé comme **ORM** afin de manipuler les données via des modèles
-plutôt que via des requêtes SQL écrites directement dans les controllers.
-
 ```
-├── backend/ # API Express + documentation Swagger
-├── docs/ # rapport de projet et documentation
+├── backend/ # API Express + Swagger
 ├── frontend/ # application React
-├── sql/ # scripts SQL (database, schema, seed)
-├── tests/ # requêtes de test SQL et exports commentés
+├── sql/ # scripts SQL
+├── docs/ # rapport de projet
+├── tests/ # requêtes SQL de test
 └── README.md
 ```
+
+---
+
+## 🧠 Architecture backend
+
+L'API suit une architecture **Express MVC** :
+
+- routes : définition des endpoints
+- controllers : logique métier
+- models : modèles Sequelize
+- middlewares : validation et gestion des erreurs
+- db : configuration Sequelize
+
+Sequelize est utilisé comme ORM pour manipuler les données via des modèles JavaScript.
+
+---
+
+## 🧠 Architecture frontend
+
+Le frontend suit une architecture modulaire :
+
+- pages : gestion des routes
+- sections : découpage des pages
+- composants : éléments réutilisables
+- services : appels API centralisés
+
+Exemple :
+```
+Home
+↓
+FeaturedArtisansSection
+↓
+ArtisanCard
+```
+
+Cette organisation permet une meilleure maintenabilité et réutilisabilité du code.
+
 ---
 
 ## 🚀 Installation du projet
 
 ### 1️⃣ Base de données
 
-#### Les scripts SQL se trouvent dans le dossier :
-- sql/
+Dossier :
+```
+sql/
+```
+
+Ordre d’exécution :
+
+1. 00_create_database.sql  
+2. 01_create_user_and_grants.sql  
+3. 02_schema.sql  
+4. 03_seed.sql  
+5. 04_tests.sql  
+
 ---
 
-#### Ordre d’exécution recommandé :
+### 2️⃣ Lancer le backend
 
-1️⃣ `00_create_database.sql`  
-2️⃣ `01_create_user_and_grants.sql`  
-3️⃣ `02_schema.sql`  
-4️⃣ `03_seed.sql`  
-5️⃣ `04_tests.sql`
-
----
-
-### 2️⃣ Lancer l'API backend
-
-```bash
+```
 cd backend
 npm install
 npm run dev
 ```
 
-#### API disponible sur :
-[http://localhost:3001](http://localhost:3001)
+API: [http://localhost:3001](http://localhost:3001)
+
+Health check: [http://localhost:3001/health](http://localhost:3001/health)
+
+Swagger: [http://localhost:3001/api-docs](http://localhost:3001/api-docs)
 
 ---
-#### Endpoint de test :
-[http://localhost:3001/health](http://localhost:3001/health)
+
+### 3️⃣ Lancer le frontend
+```
+cd frontend
+npm install
+npm run dev
+```
+Application: [http://localhost:5173](http://localhost:5173)
 
 ---
-#### Documentation Swagger :
-[http://localhost:3001/api-docs](http://localhost:3001/api-docs)
 
----
-### 📚 Endpoints principaux
+## 📚 Endpoints principaux
 - **Catégories:**
   -   GET /api/categories
   -   GET /api/categories/:id/artisans
+
 - **Artisans:**
   -   GET /api/artisans/featured
   -   GET /api/artisans/:id
   -   GET /api/artisans?search=...
+  -   POST /api/artisans/:id/contact
 
 ---
 
-### 🔐 Sécurité
-
-- utilisateur MySQL dédié à l'application
+## 🔐 Sécurité
+- utilisateur MySQL dédié
 - principe du moindre privilège
-- secrets stockés dans .env (non versionné)
-- gestion centralisée des erreurs API
-
----
-
-### 📊 Fonctionnalités backend
-
-- API REST Express
-- ORM Sequelize pour l'accès aux données
-- pagination des résultats
-- logs HTTP avec Morgan
-- validation des paramètres (middleware)
+- variables d’environnement (.env)
 - gestion centralisée des erreurs
+- protection contre les injections SQL via Sequelize
 
 ---
+
+## 📊 Fonctionnalités backend
+- API REST Express
+- ORM Sequelize
+- pagination des résultats
+- recherche multi-critères
+- logs HTTP (Morgan)
+- validation des paramètres
+- envoi d’emails (Nodemailer)
+
+---
+
+## 🎯 Fonctionnalités frontend
+- navigation multi-pages (React Router)
+- recherche dynamique d’artisans
+- affichage conditionnel (loading / error / empty state)
+- composants réutilisables
+- formulaire de contact connecté à l’API
+- fallback en cas d’indisponibilité API
+- interface responsive
 
 ## 👤 Auteur
 ```
