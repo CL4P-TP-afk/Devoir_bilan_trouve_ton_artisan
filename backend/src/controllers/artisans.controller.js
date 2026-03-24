@@ -195,24 +195,26 @@ export async function sendContactMessage(req, res) {
     });
   }
 
-  // Création d’un compte SMTP de test Ethereal
-  const testAccount = await nodemailer.createTestAccount();
-
-  // Création du transporteur SMTP avec les identifiants générés
+  /**
+   * Transport SMTP configuré via variables d'environnement.
+   * Permet un fonctionnement stable en production.
+   */
   const transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
     secure: false,
     auth: {
-      user: testAccount.user,
-      pass: testAccount.pass,
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
     },
   });
 
-  // Envoi du message
+  /**
+   * Envoi du message
+   */
   const info = await transporter.sendMail({
-    from: '"Trouve ton artisan" <contact@trouve-ton-artisan.test>',
-    to: artisan.email || "contact@test.local",
+    from: process.env.MAIL_FROM,
+    to: process.env.MAIL_TO,
     replyTo: email,
     subject: `Message pour ${artisan.name}`,
     text: `
@@ -228,6 +230,5 @@ ${message}
     success: true,
     message: "Message envoyé avec succès",
     messageId: info.messageId,
-    previewUrl: nodemailer.getTestMessageUrl(info),
   });
 }
