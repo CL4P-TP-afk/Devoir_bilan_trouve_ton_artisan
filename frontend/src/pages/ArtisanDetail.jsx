@@ -43,10 +43,28 @@ export default function ArtisanDetail() {
   function handleChange(event) {
     const { name, value } = event.target;
 
+    /**
+     * Met à jour le champ modifié dans l'état du formulaire.
+     */
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+    /**
+     * Dès que l'utilisateur recommence à saisir,
+     * on efface les anciens messages d'erreur ou de succès.
+     *
+     * Cela évite d'afficher un retour devenu obsolète
+     * alors que le formulaire est en cours de correction.
+     */
+    if (submitError) {
+      setSubmitError("");
+    }
+
+    if (submitSuccess) {
+      setSubmitSuccess("");
+    }
   }
 
   async function handleSubmit(event) {
