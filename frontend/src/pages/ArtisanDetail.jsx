@@ -67,6 +67,17 @@ export default function ArtisanDetail() {
     }
   }
 
+  /**
+   * Gestion de la soumission du formulaire de contact.
+   *
+   * Étapes :
+   * - validation côté client
+   * - appel API backend
+   * - gestion des états UX (chargement, succès, erreur)
+   *
+   * Ce découpage permet d'améliorer l'expérience utilisateur
+   * tout en conservant une validation serveur sécurisée.
+   */
   async function handleSubmit(event) {
     event.preventDefault();
 
@@ -106,7 +117,7 @@ export default function ArtisanDetail() {
         message: formData.message.trim(),
       });
 
-      setSubmitSuccess("Votre message a bien été envoyé.");
+      setSubmitSuccess("Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.");
       setFormData({
         name: "",
         email: "",
@@ -116,7 +127,7 @@ export default function ArtisanDetail() {
       console.error("Erreur lors de l’envoi du message :", err);
 
       setSubmitError(
-        "Le service de contact est momentanément indisponible. Veuillez réessayer plus tard."
+        "Une erreur est survenue lors de l’envoi de votre message. Merci de réessayer dans quelques instants."
       );
     } finally {
       setIsSubmitting(false);
