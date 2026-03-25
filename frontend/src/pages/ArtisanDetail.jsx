@@ -43,22 +43,81 @@ export default function ArtisanDetail() {
   function handleChange(event) {
     const { name, value } = event.target;
 
+    /**
+     * Met à jour le champ modifié dans l'état du formulaire.
+     */
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+    /**
+     * Dès que l'utilisateur recommence à saisir,
+     * on efface les anciens messages d'erreur ou de succès.
+     *
+     * Cela évite d'afficher un retour devenu obsolète
+     * alors que le formulaire est en cours de correction.
+     */
+    if (submitError) {
+      setSubmitError("");
+    }
+
+    if (submitSuccess) {
+      setSubmitSuccess("");
+    }
   }
 
+  /**
+   * Gestion de la soumission du formulaire de contact.
+   *
+   * Étapes :
+   * - validation côté client
+   * - appel API backend
+   * - gestion des états UX (chargement, succès, erreur)
+   *
+   * Ce découpage permet d'améliorer l'expérience utilisateur
+   * tout en conservant une validation serveur sécurisée.
+   */
   async function handleSubmit(event) {
     event.preventDefault();
 
+    /**
+     * Réinitialise les messages précédents avant une nouvelle tentative d'envoi.
+     */
     setSubmitError("");
     setSubmitSuccess("");
 
+    /**
+     * Validation simple côté client.
+     * Le backend garde bien sûr la validation finale,
+     * mais cette étape évite des requêtes inutiles et améliore l'UX.
+     */
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      setSubmitError("Merci de remplir tous les champs du formulaire.");
+      return;
+    }
+
+    /**
+     * Validation minimale du format d'email.
+     * Cette vérification n'est pas parfaite, mais elle suffit pour guider l'utilisateur.
+     */
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(formData.email.trim())) {
+      setSubmitError("Merci de saisir une adresse email valide.");
+      return;
+    }
+
     try {
       setIsSubmitting(true);
-      await sendContactMessage(id, formData);
-      setSubmitSuccess("Votre message a bien été envoyé.");
+
+      await sendContactMessage(id, {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        message: formData.message.trim(),
+      });
+
+      setSubmitSuccess("Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.");
       setFormData({
         name: "",
         email: "",
@@ -66,8 +125,9 @@ export default function ArtisanDetail() {
       });
     } catch (err) {
       console.error("Erreur lors de l’envoi du message :", err);
+
       setSubmitError(
-        "Le service de contact est momentanément indisponible. Veuillez réessayer plus tard."
+        "Une erreur est survenue lors de l’envoi de votre message. Merci de réessayer dans quelques instants."
       );
     } finally {
       setIsSubmitting(false);
