@@ -52,12 +52,42 @@ export default function ArtisanDetail() {
   async function handleSubmit(event) {
     event.preventDefault();
 
+    /**
+     * Réinitialise les messages précédents avant une nouvelle tentative d'envoi.
+     */
     setSubmitError("");
     setSubmitSuccess("");
 
+    /**
+     * Validation simple côté client.
+     * Le backend garde bien sûr la validation finale,
+     * mais cette étape évite des requêtes inutiles et améliore l'UX.
+     */
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      setSubmitError("Merci de remplir tous les champs du formulaire.");
+      return;
+    }
+
+    /**
+     * Validation minimale du format d'email.
+     * Cette vérification n'est pas parfaite, mais elle suffit pour guider l'utilisateur.
+     */
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(formData.email.trim())) {
+      setSubmitError("Merci de saisir une adresse email valide.");
+      return;
+    }
+
     try {
       setIsSubmitting(true);
-      await sendContactMessage(id, formData);
+
+      await sendContactMessage(id, {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        message: formData.message.trim(),
+      });
+
       setSubmitSuccess("Votre message a bien été envoyé.");
       setFormData({
         name: "",
@@ -66,6 +96,7 @@ export default function ArtisanDetail() {
       });
     } catch (err) {
       console.error("Erreur lors de l’envoi du message :", err);
+
       setSubmitError(
         "Le service de contact est momentanément indisponible. Veuillez réessayer plus tard."
       );
