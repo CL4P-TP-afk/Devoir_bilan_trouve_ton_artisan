@@ -239,7 +239,7 @@ ${message}
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.MAILTRAP_API_TOKEN}`,
+      Authorization: process.env.MAILTRAP_API_TOKEN,
     },
     body: JSON.stringify(payload),
   });
