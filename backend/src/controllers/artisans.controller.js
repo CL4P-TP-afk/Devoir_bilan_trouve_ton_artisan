@@ -235,14 +235,17 @@ ${message}
    * Cette approche évite les limitations SMTP de l'hébergement gratuit
    * et reste adaptée à un environnement de démonstration ou de test.
    */
-  const response = await fetch("https://send.api.mailtrap.io/api/send", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: process.env.MAILTRAP_API_TOKEN,
-    },
-    body: JSON.stringify(payload),
-  });
+  const response = await fetch(
+    `https://sandbox.api.mailtrap.io/api/send/${process.env.MAILTRAP_INBOX_ID}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.MAILTRAP_API_TOKEN}`,
+      },
+      body: JSON.stringify(payload),
+    }
+  );
 
   if (!response.ok) {
     const errorText = await response.text();
