@@ -73,3 +73,28 @@
 .artisan-detail__contact-list a:hover {
   text-decoration: underline;
 }
+
+.artisan-detail__meta {
+  margin: 1rem 0;
+}
+
+.artisan-detail__meta-item {
+  margin-bottom: 0.5rem;
+}
+
+.artisan-detail__meta-label {
+  font-weight: 600;
+  margin-right: 0.5rem;
+  color: #555;
+}
+
+.artisan-detail__rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.artisan-detail__rating-label {
+  font-weight: 600;
+}

@@ -54,8 +54,12 @@ export default function ArtisanHeroSection({ artisan }) {
 
           <div className="artisan-detail__rating">
 
+            <span className="artisan-detail__rating-label">
+              Note :
+            </span>
+
             <span className="artisan-detail__rating-value">
-              {rating}/5
+              {rating.toFixed(1)} / 5
             </span>
 
             <span
