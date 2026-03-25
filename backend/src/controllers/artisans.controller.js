@@ -14,7 +14,7 @@
 
 import { Artisan, Specialty, Category } from "../models/index.js";
 import { Op } from "sequelize";
-import nodemailer from "nodemailer";
+
 
 /**
  * Retourne jusqu'à 3 artisans "mis en avant" pour la page d'accueil.
@@ -173,7 +173,7 @@ export async function searchArtisans(req, res) {
 }
 
 /**
- * Envoie un message de contact à un artisan.
+ * Envoie un message de contact à un artisan via l'API Mailtrap.
  *
  * @route POST /api/artisans/:id/contact
  */
@@ -196,39 +196,66 @@ export async function sendContactMessage(req, res) {
   }
 
   /**
-   * Transport SMTP configuré via variables d'environnement.
-   * Permet un fonctionnement stable en production.
+   * Construction du contenu du message.
+   *
+   * Le formulaire est envoyé à l'adresse définie dans l'environnement.
+   * L'email de l'utilisateur est placé dans "reply_to" pour permettre
+   * une réponse directe depuis le client mail.
    */
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: false,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+  const payload = {
+    from: {
+      email: process.env.MAIL_FROM_EMAIL,
+      name: process.env.MAIL_FROM_NAME,
     },
-  });
-
-  /**
-   * Envoi du message
-   */
-  const info = await transporter.sendMail({
-    from: process.env.MAIL_FROM,
-    to: process.env.MAIL_TO,
-    replyTo: email,
+    to: [
+      {
+        email: process.env.MAIL_TO,
+      },
+    ],
     subject: `Message pour ${artisan.name}`,
     text: `
 Nom : ${name}
 Email : ${email}
 
+Artisan concerné : ${artisan.name}
+
 Message :
 ${message}
     `,
+    reply_to: {
+      email,
+      name,
+    },
+    category: "contact-form",
+  };
+
+  /**
+   * Envoi via l'API HTTP Mailtrap.
+   *
+   * Cette approche évite les limitations SMTP de l'hébergement gratuit
+   * et reste adaptée à un environnement de démonstration ou de test.
+   */
+  const response = await fetch("https://send.api.mailtrap.io/api/send", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.MAILTRAP_API_TOKEN}`,
+    },
+    body: JSON.stringify(payload),
   });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+
+    console.error("❌ Mailtrap API error:", errorText);
+
+    return res.status(503).json({
+      error: "Le service de contact est momentanément indisponible. Veuillez réessayer plus tard.",
+    });
+  }
 
   return res.status(200).json({
     success: true,
     message: "Message envoyé avec succès",
-    messageId: info.messageId,
   });
 }
