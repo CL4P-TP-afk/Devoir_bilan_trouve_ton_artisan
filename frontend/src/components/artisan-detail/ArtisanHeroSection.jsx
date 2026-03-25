@@ -38,13 +38,19 @@ export default function ArtisanHeroSection({ artisan }) {
             {artisan.name}
           </h1>
 
-          <p className="artisan-detail__specialty">
-            {artisan.specialty}
-          </p>
+          <div className="artisan-detail__meta">
 
-          <p className="artisan-detail__city">
-            {artisan.city}
-          </p>
+            <p className="artisan-detail__meta-item">
+              <span className="artisan-detail__meta-label">Spécialité :</span>
+              <span className="artisan-detail__meta-value">{artisan.specialty}</span>
+            </p>
+
+            <p className="artisan-detail__meta-item">
+              <span className="artisan-detail__meta-label">Ville :</span>
+              <span className="artisan-detail__meta-value">{artisan.city}</span>
+            </p>
+
+          </div>
 
           <div className="artisan-detail__rating">
 
