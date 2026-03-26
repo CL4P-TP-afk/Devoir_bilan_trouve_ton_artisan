@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import ArtisanCard from "../components/artisans/ArtisanCard.jsx";
 import { getArtisansByCategoryId } from "../services/categoryService.js";
 import SearchForm from "../components/search/SearchForm";
+import Seo from "../components/seo/Seo.jsx";
 
 export default function Category() {
   const { id } = useParams();
@@ -54,6 +55,11 @@ export default function Category() {
   }
 
   return (
+    <>
+    <Seo
+      title={`${category?.name || "Catégorie"} | Trouve ton artisan`}
+      description={`Découvrez les artisans de la catégorie ${category?.name || "sélectionnée"} sur Trouve ton artisan.`}
+    />
     <section className="py-5">
       <div className="container">
         <header className="text-center mb-5">
@@ -86,5 +92,6 @@ export default function Category() {
         )}
       </div>
     </section>
+    </>
   );
 }

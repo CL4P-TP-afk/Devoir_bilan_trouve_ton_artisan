@@ -1,10 +1,16 @@
 import { Link } from "react-router-dom";
+import Seo from "../components/seo/Seo.jsx";
 
 /**
  * Page en construction - utilisée pour les pages légales vides.
  */
 export default function ConstructionPage() {
   return (
+    <>
+    <Seo
+      title="Mentions légales | Trouve ton artisan"
+      description="Consultez les mentions légales du site Trouve ton artisan."
+    />
     <section className="status-page status-page--construction">
       <div className="container text-center">
 
@@ -22,5 +28,6 @@ export default function ConstructionPage() {
 
       </div>
     </section>
+    </>
   );
 }
