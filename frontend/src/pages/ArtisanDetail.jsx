@@ -4,6 +4,7 @@ import { getArtisanById, sendContactMessage } from "../services/artisans.service
 import ArtisanHeroSection from "../components/artisan-detail/ArtisanHeroSection";
 import ArtisanAboutSection from "../components/artisan-detail/ArtisanAboutSection";
 import ArtisanContactSection from "../components/artisan-detail/ArtisanContactSection";
+import Seo from "../components/seo/Seo.jsx";
 
 export default function ArtisanDetail() {
   const { id } = useParams();
@@ -155,6 +156,19 @@ export default function ArtisanDetail() {
   }
 
   return (
+    <>
+    <Seo
+      title={
+        artisan
+          ? `${artisan.name} | Trouve ton artisan`
+          : "Fiche artisan | Trouve ton artisan"
+      }
+      description={
+        artisan
+          ? `${artisan.specialty} à ${artisan.city}. Consultez la fiche de ${artisan.name}, sa note et ses informations de contact.`
+          : "Consultez la fiche détaillée d’un artisan sur Trouve ton artisan."
+      }
+    />
     <section className="artisan-detail">
 
         <ArtisanHeroSection artisan={artisan} />
@@ -169,5 +183,6 @@ export default function ArtisanDetail() {
         />
 
     </section>
+    </>
   );
 }

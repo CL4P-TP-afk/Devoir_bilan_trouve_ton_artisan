@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import ArtisanCard from "../components/artisans/ArtisanCard";
 import { searchArtisans } from "../services/artisans.service";
 import SearchForm from "../components/search/SearchForm";
+import Seo from "../components/seo/Seo.jsx";
 
 /**
  * Page affichant les résultats d'une recherche d'artisans.
@@ -80,6 +81,11 @@ export default function SearchResults() {
 
 
   return (
+    <>
+    <Seo
+      title="Recherche d’artisans | Trouve ton artisan"
+      description="Recherchez un artisan par mot-clé, spécialité ou localisation sur Trouve ton artisan."
+    />
     <section className="py-5">
       <div className="container">
 
@@ -149,5 +155,6 @@ export default function SearchResults() {
 
       </div>
     </section>
+    </>
   );
 }

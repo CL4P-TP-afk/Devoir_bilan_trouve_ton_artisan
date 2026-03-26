@@ -3,6 +3,7 @@ import { getFeaturedArtisans } from "../services/artisans.service";
 import HeroSection from "../components/home/HeroSection"
 import StepsSection from "../components/home/StepsSection"
 import FeaturedArtisansSection from "../components/home/FeaturedArtisansSection"
+import Seo from "../components/seo/Seo.jsx";
 
 export default function Home() {
   const [artisans, setArtisans] = useState([]);
@@ -29,6 +30,10 @@ export default function Home() {
 
   return (
     <>
+      <Seo
+        title="Accueil | Trouve ton artisan"
+        description="Trouvez facilement un artisan de confiance en Auvergne-Rhône-Alpes selon votre besoin, votre catégorie de travaux et votre localisation."
+      />
       <HeroSection />
       <StepsSection />
       <FeaturedArtisansSection

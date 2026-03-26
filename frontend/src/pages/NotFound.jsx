@@ -1,10 +1,16 @@
 import { Link } from "react-router-dom";
+import Seo from "../components/seo/Seo.jsx";
 
 /**
  * Page 404 - affichée lorsqu'aucune route ne correspond.
  */
 export default function NotFound() {
   return (
+    <>
+    <Seo
+      title="Page introuvable | Trouve ton artisan"
+      description="La page demandée est introuvable. Retournez à l’accueil pour poursuivre votre navigation sur Trouve ton artisan."
+    />
     <section className="status-page status-page--notfound">
       <div className="container text-center">
 
@@ -24,5 +30,6 @@ export default function NotFound() {
 
       </div>
     </section>
+    </>
   );
 }
