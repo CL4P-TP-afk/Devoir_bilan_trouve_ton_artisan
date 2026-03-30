@@ -24,6 +24,8 @@ Fonctionnalités principales :
 - ✅ API REST Node.js / Express
 - ✅ Documentation API Swagger (OpenAPI)
 - ✅ Frontend React (application complète)
+- ✅ Déploiement complet (Frontend, Backend, Base de données)
+- ✅ Mise en place du SEO (métadonnées dynamiques, sitemap, robots.txt)
 
 ---
 
@@ -46,7 +48,7 @@ Fonctionnalités principales :
 
 ### Base de données
 
-- MySQL / MariaDB
+- MySQL / MariaDB (Aiven - base managée)
 - charset : `utf8mb4`
 - collation : `utf8mb4_unicode_ci`
 
@@ -156,6 +158,43 @@ Application: [http://localhost:5173](http://localhost:5173)
 
 ---
 
+## 🌍 Version déployée
+
+Le projet est accessible en ligne :
+
+- Frontend : https://devoir-bilan-trouve-ton-artisan-zeta.vercel.app  
+- Backend : (Render - URL API)
+
+---
+
+## ✉️ Système de contact
+
+Le système de contact repose sur un endpoint backend :
+```
+POST /api/artisans/:id/contact
+```
+En environnement de développement, un système SMTP était utilisé via Nodemailer.
+
+En production, ce système a été remplacé par l’API **Mailtrap (mode sandbox)** en raison des limitations des plateformes cloud (ports SMTP bloqués sur Render).
+
+Cela permet de simuler l’envoi d’emails de manière fiable sans dépendre d’un serveur SMTP.
+
+---
+
+## 🔍 SEO
+
+Le référencement du site a été pris en compte avec une approche hybride :
+
+- métadonnées statiques dans `index.html`
+- composant React `Seo.jsx` pour les pages dynamiques
+- génération d’un `sitemap.xml`
+- configuration d’un `robots.txt`
+
+Chaque page dispose d’un titre et d’une description adaptés (accueil, catégorie, fiche artisan, recherche, etc.).
+
+---
+
+
 ## 📚 Endpoints principaux
 - **Catégories:**
   -   GET /api/categories
@@ -197,6 +236,20 @@ Application: [http://localhost:5173](http://localhost:5173)
 - formulaire de contact connecté à l’API
 - fallback en cas d’indisponibilité API
 - interface responsive
+
+---
+
+## 📈 Qualité du projet
+
+Une analyse Lighthouse a été réalisée (mettre les screen):
+sur home desktop:
+
+- Performance : 100
+- Accessibilité : 95
+- Bonnes pratiques : 100
+- SEO : 100
+
+---
 
 ## 👤 Auteur
 ```
