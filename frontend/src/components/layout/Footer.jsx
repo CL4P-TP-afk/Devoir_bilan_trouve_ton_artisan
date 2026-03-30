@@ -14,7 +14,7 @@ export default function Footer() {
           </div>
 
           {/* Liens légaux */}
-          <div className="col-12 col-lg-4 text-lg-center">
+          <div className="col-12 col-lg-4 text-center">
             <h2 className="mb-2">Liens légaux</h2>
             <ul className="list-unstyled m-0">
               <li><NavLink to="/mentions-legales">Mentions légales</NavLink></li>
