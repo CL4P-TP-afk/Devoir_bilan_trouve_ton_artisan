@@ -132,6 +132,17 @@ DB_NAME=trouve_ton_artisan
 
 ---
 
+## 🗄️ Base de données
+
+La base de données est utilisée :
+
+- en local (développement)
+- via **Aiven (MySQL managé)** en production
+
+Les connexions sont entièrement pilotées par les variables d’environnement.
+
+---
+
 ## ▶️ Lancer l’API
 En développement :
 ```
@@ -232,6 +243,29 @@ Permet d’envoyer un message à un artisan via le formulaire de contact.
 - Le previewUrl permet de visualiser l’email sans envoi réel
 
 ---
+
+## ✉️ Système de contact
+
+### Développement
+
+- utilisation de **Nodemailer**
+- envoi simulé via SMTP (Ethereal)
+
+### Production
+
+Le système SMTP a été remplacé par l’API **Mailtrap (mode sandbox)**.
+
+Raison :
+- ports SMTP bloqués sur Render
+- contraintes de sécurité des plateformes cloud
+
+Mailtrap permet :
+- de simuler l’envoi d’emails
+- de tester sans dépendance SMTP
+
+Variables nécessaires :
+- MAILTRAP_API_TOKEN=
+- MAILTRAP_INBOX_ID=
 
 ## 📖 Documentation API
 

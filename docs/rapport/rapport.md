@@ -401,6 +401,43 @@ Sequelize permet de manipuler les données via des **modèles JavaScript représ
 
 ### 8.1 Architecture du backend
 
+#### 📁 Architecture
+```
+backend/
+├── src/
+│   ├── app.js            # Configuration Express
+│   ├── server.js         # Point d'entrée du serveur
+│   │
+│   ├── db/
+│   │   └── sequelize.js  # Configuration Sequelize (connexion DB)
+│   │
+│   ├── models/           # Modèles Sequelize
+│   │   ├── Artisan.js
+│   │   ├── Category.js
+│   │   ├── Specialty.js
+│   │   └── index.js      # Associations entre modèles
+│   │
+│   ├── controllers/      # Logique métier
+│   │   ├── artisans.controller.js
+│   │   └── categories.controller.js
+│   │
+│   ├── routes/           # Définition des endpoints
+│   │   ├── artisans.routes.js
+│   │   └── categories.routes.js
+│   │
+│   ├── middlewares/      # Middlewares (validation, erreurs)
+│   │   ├── catchAsync.js
+│   │   ├── errorHandler.js
+│   │   └── validateIdParam.js
+│   │
+│   └── docs/             # Documentation OpenAPI
+│       └── openapi.js
+│
+└── package.json
+```
+
+---
+
 L’API a été structurée selon une architecture modulaire inspirée des bonnes pratiques professionnelles :
 
 - **routes** : définition des endpoints HTTP
