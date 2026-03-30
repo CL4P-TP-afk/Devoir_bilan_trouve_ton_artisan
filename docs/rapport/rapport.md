@@ -581,6 +581,67 @@ Ces mesures permettent d’améliorer la robustesse et la sécurité globale de 
 
 ## 9. Développement front-end 
 
+### 🗂️Architecture du projet
+```
+src
+├─ app
+│  ├─ App.jsx
+│  ├─ config.js
+│  └─ routes.jsx
+│
+├─ assets
+│
+├─ components
+│  ├─ artisans
+│  │  └─ ArtisanCard.jsx
+│  │
+│  ├─ artisan-detail
+│  │  ├─ ArtisanHeroSection.jsx
+│  │  ├─ ArtisanAboutSection.jsx
+│  │  └─ ArtisanContactSection.jsx
+│  │
+│  ├─ home
+│  │  ├─ FeaturedArtisansSection.jsx
+│  │  ├─ HeroSection.jsx
+│  │  └─ StepsSection.jsx
+│  │
+│  ├─ layout
+│  │  ├─ Header.jsx
+│  │  ├─ Footer.jsx
+│  │  └─ Layout.jsx
+│  │
+│  ├─ search
+│  │  └─ SearchForm.jsx
+│  │
+│  └─ seo
+│     └─ Seo.jsx
+│
+├─ pages
+│  ├─ Home.jsx
+│  ├─ Category.jsx
+│  ├─ ArtisanDetail.jsx
+│  ├─ SearchResults.jsx
+│  ├─ NotFound.jsx
+│  └─ ConstructionPage.jsx
+│
+├─ services
+│  ├─ api.js
+│  ├─ artisans.service.js
+│  └─ categoryService.js
+│
+└─ styles
+   ├─ _variables.scss
+   ├─ _header.scss
+   ├─ _footer.scss
+   ├─ _home.scss
+   ├─ _category.scss
+   ├─ _artisan.scss
+   ├─ _artisan-card.scss
+   ├─ _status.scss
+   └─ main.scss
+```
+---
+
 Le développement du front-end a été réalisé avec la bibliothèque **React**, en utilisant l’outil de build **Vite**.
 
 L’application a été conçue selon une architecture modulaire, avec une séparation claire des responsabilités :

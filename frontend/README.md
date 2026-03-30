@@ -307,6 +307,11 @@ API utilisée :
 ```
 [http://localhost:3001/api](http://localhost:3001/api)
 ```
+API utilisée en production :
+
+- backend déployé sur Render
+- URL configurée via VITE_API_URL
+
 ---
 
 ## 🧩 Fonctionnalités implémentées
@@ -319,6 +324,8 @@ API utilisée :
 - moteur de recherche avec page de résultats
 - gestion des erreurs utilisateur
 - pages 404 et pages en construction
+- SEO dynamique par page
+- sitemap et robots.txt
 
 ---
 
