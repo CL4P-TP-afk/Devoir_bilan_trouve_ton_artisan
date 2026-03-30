@@ -241,8 +241,7 @@ Chaque page dispose d’un titre et d’une description adaptés (accueil, caté
 
 ## 📈 Qualité du projet
 
-Une analyse Lighthouse a été réalisée (mettre les screen):
-sur home desktop:
+Une analyse Lighthouse a été réalisée (exemple sur home-desktop):
 
 - Performance : 100
 - Accessibilité : 95
