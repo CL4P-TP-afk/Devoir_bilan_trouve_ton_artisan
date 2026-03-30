@@ -86,6 +86,20 @@ Fallback par défaut :
 
 ---
 
+## 🚀 Déploiement
+
+Le frontend est déployé sur Vercel.
+
+Le déploiement prend en compte :
+
+- la variable VITE_API_URL pour pointer vers l’API Render
+- un fichier vercel.json pour gérer correctement le routage React Router
+- la version de production du site
+
+Le site en ligne est accessible via une URL Vercel.
+
+---
+
 ## 🗂️ Architecture du projet
 ```
 src
@@ -115,8 +129,11 @@ src
 │  │  ├─ Footer.jsx
 │  │  └─ Layout.jsx
 │  │
-│  └─ search
-│     └─ SearchForm.jsx
+│  ├─ search
+│  │  └─ SearchForm.jsx
+│  │
+│  └─ seo
+│     └─ Seo.jsx
 │
 ├─ pages
 │  ├─ Home.jsx
@@ -218,6 +235,42 @@ Objectif : interface toujours fonctionnelle même en cas de problème backend
 
 ---
 
+## ✉️ Formulaire de contact
+
+Le formulaire de contact est relié au backend.
+
+En production, l’envoi est simulé via Mailtrap (mode sandbox) afin de reproduire le comportement d’un service email réel sans envoi effectif vers une adresse de destination.
+
+Le frontend gère :
+
+- l’état de chargement
+- les messages de succès
+- les messages d’erreur utilisateurs
+- la validation simple côté client avant envoi
+
+---
+
+## 🔍 SEO
+
+Le frontend intègre une stratégie SEO simple adaptée à une application React SPA :
+
+- balises SEO de base dans index.html
+- composant React Seo.jsx pour mettre à jour dynamiquement :
+  -   le titre de la page
+  -   la meta description
+- fichier robots.txt
+- fichier sitemap.xml
+
+Cette approche permet de différencier le référencement des pages principales :
+
+- accueil
+- catégorie
+- fiche artisan
+- recherche
+- page 404
+
+---
+
 ## 🎨 Styles & design system
 
 Organisation avec Sass :
@@ -245,6 +298,7 @@ Respect des maquettes Figma :
 - routing propre avec React Router
 - layout global partagé (Header / Footer)
 - composants découplés (pages → sections)
+- métadonnées SEO dynamiques selon la page
 ---
 
 ## 🔗 Lien avec le backend
@@ -253,6 +307,11 @@ API utilisée :
 ```
 [http://localhost:3001/api](http://localhost:3001/api)
 ```
+API utilisée en production :
+
+- backend déployé sur Render
+- URL configurée via VITE_API_URL
+
 ---
 
 ## 🧩 Fonctionnalités implémentées
@@ -265,6 +324,8 @@ API utilisée :
 - moteur de recherche avec page de résultats
 - gestion des erreurs utilisateur
 - pages 404 et pages en construction
+- SEO dynamique par page
+- sitemap et robots.txt
 
 ---
 

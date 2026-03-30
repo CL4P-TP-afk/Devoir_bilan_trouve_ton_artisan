@@ -401,6 +401,43 @@ Sequelize permet de manipuler les données via des **modèles JavaScript représ
 
 ### 8.1 Architecture du backend
 
+#### 📁 Architecture
+```
+backend/
+├── src/
+│   ├── app.js            # Configuration Express
+│   ├── server.js         # Point d'entrée du serveur
+│   │
+│   ├── db/
+│   │   └── sequelize.js  # Configuration Sequelize (connexion DB)
+│   │
+│   ├── models/           # Modèles Sequelize
+│   │   ├── Artisan.js
+│   │   ├── Category.js
+│   │   ├── Specialty.js
+│   │   └── index.js      # Associations entre modèles
+│   │
+│   ├── controllers/      # Logique métier
+│   │   ├── artisans.controller.js
+│   │   └── categories.controller.js
+│   │
+│   ├── routes/           # Définition des endpoints
+│   │   ├── artisans.routes.js
+│   │   └── categories.routes.js
+│   │
+│   ├── middlewares/      # Middlewares (validation, erreurs)
+│   │   ├── catchAsync.js
+│   │   ├── errorHandler.js
+│   │   └── validateIdParam.js
+│   │
+│   └── docs/             # Documentation OpenAPI
+│       └── openapi.js
+│
+└── package.json
+```
+
+---
+
 L’API a été structurée selon une architecture modulaire inspirée des bonnes pratiques professionnelles :
 
 - **routes** : définition des endpoints HTTP
@@ -544,6 +581,67 @@ Ces mesures permettent d’améliorer la robustesse et la sécurité globale de 
 
 ## 9. Développement front-end 
 
+### 🗂️Architecture du projet
+```
+src
+├─ app
+│  ├─ App.jsx
+│  ├─ config.js
+│  └─ routes.jsx
+│
+├─ assets
+│
+├─ components
+│  ├─ artisans
+│  │  └─ ArtisanCard.jsx
+│  │
+│  ├─ artisan-detail
+│  │  ├─ ArtisanHeroSection.jsx
+│  │  ├─ ArtisanAboutSection.jsx
+│  │  └─ ArtisanContactSection.jsx
+│  │
+│  ├─ home
+│  │  ├─ FeaturedArtisansSection.jsx
+│  │  ├─ HeroSection.jsx
+│  │  └─ StepsSection.jsx
+│  │
+│  ├─ layout
+│  │  ├─ Header.jsx
+│  │  ├─ Footer.jsx
+│  │  └─ Layout.jsx
+│  │
+│  ├─ search
+│  │  └─ SearchForm.jsx
+│  │
+│  └─ seo
+│     └─ Seo.jsx
+│
+├─ pages
+│  ├─ Home.jsx
+│  ├─ Category.jsx
+│  ├─ ArtisanDetail.jsx
+│  ├─ SearchResults.jsx
+│  ├─ NotFound.jsx
+│  └─ ConstructionPage.jsx
+│
+├─ services
+│  ├─ api.js
+│  ├─ artisans.service.js
+│  └─ categoryService.js
+│
+└─ styles
+   ├─ _variables.scss
+   ├─ _header.scss
+   ├─ _footer.scss
+   ├─ _home.scss
+   ├─ _category.scss
+   ├─ _artisan.scss
+   ├─ _artisan-card.scss
+   ├─ _status.scss
+   └─ main.scss
+```
+---
+
 Le développement du front-end a été réalisé avec la bibliothèque **React**, en utilisant l’outil de build **Vite**.
 
 L’application a été conçue selon une architecture modulaire, avec une séparation claire des responsabilités :
@@ -579,11 +677,144 @@ L’organisation des fichiers de styles suit également une logique modulaire (v
 Enfin, un formulaire de contact a été implémenté, permettant d’envoyer un message à un artisan via un endpoint dédié du backend.
 
 
+
+## 10. Déploiement de l’application
+
+Le déploiement du projet a été réalisé afin de se rapprocher d’un contexte de production réel et de valider le bon fonctionnement de l’application en environnement distant.
+
 ---
 
-## 10. Difficultés rencontrées et solutions
+### 10.1 Choix des solutions d’hébergement
 
-### 10.1 Conflit de collation MySQL lors des requêtes de recherche
+Le projet a été déployé en séparant les différentes couches de l’application :
+
+- **Frontend** : hébergé sur Vercel
+- **Backend** : hébergé sur Render
+- **Base de données** : hébergée sur Aiven (MySQL managé)
+
+Ce découpage permet de reproduire une architecture moderne utilisée en entreprise, avec des services spécialisés pour chaque composant.
+
+---
+
+### 10.2 Configuration des environnements
+
+La gestion des variables d’environnement a été un point central du déploiement.
+
+Plusieurs fichiers ont été utilisés :
+- `.env.local` pour le développement local
+- `.env.aiven` pour la connexion à la base distante
+- `.env.example` pour documenter la configuration
+
+Les variables sensibles (identifiants base de données, API email) ne sont pas versionnées et sont configurées directement dans les plateformes de déploiement (Render, Vercel).
+
+---
+
+### 10.3 Difficultés rencontrées
+
+Plusieurs problèmes ont été rencontrés lors du déploiement :
+
+- erreur de connexion à la base de données (service Aiven en pause)
+- incompatibilité des commandes MySQL en ligne de commande sous PowerShell
+- problèmes de résolution DNS lors du déploiement sur Render
+
+Ces problèmes ont permis de mieux comprendre les contraintes liées à l’environnement de production.
+
+---
+
+### 10.4 Résultat
+
+Le backend est accessible via une URL Render et expose les endpoints API.
+
+Le frontend est déployé sur Vercel et consomme l’API en production.
+
+L’ensemble de l’application est fonctionnel en ligne.
+
+---
+
+## 11. Évolution du système de contact
+
+Lors de la mise en place du formulaire de contact en environnement de production, des limitations techniques sont apparues.
+
+### 11.1 Problème rencontré
+
+L’utilisation d’un transport SMTP classique via Nodemailer a échoué sur Render.
+
+Les erreurs observées étaient :
+- timeout de connexion
+- ports SMTP bloqués
+
+Ces restrictions sont liées aux politiques de sécurité des plateformes cloud.
+
+### 11.2 Solution mise en place
+
+Le système d’envoi d’email a été remplacé par l’API **Mailtrap** en mode sandbox.
+
+Cette solution permet :
+- de simuler l’envoi d’emails
+- de tester le fonctionnement sans dépendre d’un serveur SMTP
+- de visualiser les messages envoyés via une interface dédiée
+
+### 11.3 Justification technique
+
+Dans un contexte réel, un service transactionnel (Sendgrid, Mailgun, etc.) serait utilisé.
+
+Mailtrap permet ici de reproduire un comportement réaliste tout en restant adapté à un environnement de formation.
+
+### 11.4 Résultat
+
+Le formulaire de contact fonctionne en production et les messages sont correctement simulés et consultables.
+
+## 12. Optimisation SEO
+
+Une attention particulière a été portée au référencement du site afin d’améliorer sa visibilité et sa compréhension par les moteurs de recherche.
+
+### 12.1 Stratégie mise en place
+
+Une approche hybride a été utilisée :
+
+- définition de métadonnées statiques dans `index.html`
+- création d’un composant React dédié (`Seo.jsx`)
+- mise à jour dynamique du titre et de la description selon la page
+
+Cette approche permet d’adapter le référencement à chaque vue de l’application.
+
+### 12.2 Sitemap et robots.txt
+
+Deux fichiers ont été ajoutés :
+
+- `robots.txt` : autorise l’exploration du site et référence le sitemap
+- `sitemap.xml` : liste les pages principales, les catégories et les fiches artisans
+
+Le sitemap a été construit manuellement à partir des routes existantes, en s’appuyant sur les données du seed.
+
+### 12.3 Limites
+
+L’application étant une **Single Page Application (SPA)**, le rendu initial repose sur JavaScript.
+
+Cela peut limiter l’indexation par certains robots, contrairement à une solution SSR (Next.js).
+
+### 12.4 Résultats
+
+Une analyse avec Lighthouse a été réalisée sur plusieurs pages :
+
+- page d’accueil
+- page catégorie
+- fiche artisan
+
+Les résultats obtenus sont :
+
+- Performance : 100
+- Accessibilité : 95
+- Bonnes pratiques : 100
+- SEO : 100
+
+Ces scores confirment la qualité globale du projet.
+
+Des améliorations mineures restent possibles sur l’accessibilité.
+
+## 13. Difficultés rencontrées et solutions
+
+### 13.1 Conflit de collation MySQL lors des requêtes de recherche
 
 Lors de l’exécution des requêtes SQL de recherche, une erreur MySQL est apparue :
 ```
@@ -634,7 +865,7 @@ La collation utf8mb4_unicode_ci garantit une comparaison cohérente des chaînes
 
 ---
 
-### 10.2 Cohérence entre le front-end, le back-end et la documentation
+### 13.2 Cohérence entre le front-end, le back-end et la documentation
 
 Lors du développement, une incohérence a été identifiée entre :
 
@@ -676,7 +907,7 @@ La cohérence entre backend, frontend et documentation est essentielle pour :
 
 ---
 
-### 10.3 Mise en place du formulaire de contact
+### 13.3 Mise en place du formulaire de contact
 
 L’ajout du formulaire de contact a nécessité la création d’un endpoint backend et l’intégration d’un système d’envoi d’email.
 
@@ -705,7 +936,7 @@ Ethereal permet de tester un système d’envoi d’emails sans dépendre d’un
 
 ---
 
-### 10.4 Gestion des layouts et du responsive
+### 13.4 Gestion des layouts et du responsive
 
 Des difficultés ont été rencontrées dans la mise en page de certaines pages, notamment la fiche artisan.
 
@@ -729,7 +960,7 @@ Bootstrap limite la largeur via `container`, ce qui nécessite une structuration
 
 ---
 
-### 10.5 Structuration et réutilisation des composants React
+### 13.5 Structuration et réutilisation des composants React
 
 La structuration initiale des pages rendait certaines parties difficiles à maintenir.
 
@@ -757,7 +988,7 @@ Une architecture modulaire permet :
 
 ---
 
-### 10.6 Gestion des erreurs et expérience utilisateur
+### 13.6 Gestion des erreurs et expérience utilisateur
 
 Certains cas d’erreur n’étaient pas correctement gérés, notamment lorsque l’API était indisponible.
 
@@ -781,7 +1012,7 @@ Un utilisateur ne doit pas être exposé à des messages techniques internes.
 
 ---
 
-### 10.7 Vulnérabilités npm liées aux dépendances
+### 13.7 Vulnérabilités npm liées aux dépendances
 
 Lors de l’installation de certaines dépendances (notamment Swagger et Nodemailer), l’outil `npm audit` a signalé des vulnérabilités.
 
@@ -805,7 +1036,7 @@ Certaines vulnérabilités sont liées à l’écosystème Node.js et ne représ
 
 ---
 
-### 10.8 Sécurité et gestion des secrets
+### 13.8 Sécurité et gestion des secrets
 
 La gestion des identifiants sensibles a été un point d’attention durant le développement.
 
@@ -827,11 +1058,11 @@ La séparation entre code et configuration permet de sécuriser les données sen
 
 ---
 
-## 11. Compétences acquises
+## 14. Compétences acquises
 
 La réalisation de ce projet a permis de développer des compétences techniques et méthodologiques dans l’ensemble des couches d’une application web, du frontend au backend.
 
-### 11.1 Conception
+### 14.1 Conception
 
 - analyse d’un cahier des charges et identification des besoins fonctionnels  
 - conception d’interfaces utilisateur avec Figma  
@@ -840,7 +1071,7 @@ La réalisation de ce projet a permis de développer des compétences techniques
 
 ---
 
-### 11.2 Base de données
+### 14.2 Base de données
 
 - modélisation de la base de données (MCD / MLD)  
 - conception d’un schéma relationnel cohérent  
@@ -850,7 +1081,7 @@ La réalisation de ce projet a permis de développer des compétences techniques
 
 ---
 
-### 11.3 Backend
+### 14.3 Backend
 
 - conception et développement d’une API REST avec Node.js et Express  
 - utilisation de l’ORM Sequelize pour l’accès aux données  
@@ -862,7 +1093,7 @@ La réalisation de ce projet a permis de développer des compétences techniques
 
 ---
 
-### 11.4 Frontend
+### 14.4 Frontend
 
 - développement d’une application avec React  
 - mise en place du routage avec React Router  
@@ -875,7 +1106,7 @@ La réalisation de ce projet a permis de développer des compétences techniques
 
 ---
 
-### 11.5 Méthodologie et outils
+### 14.5 Méthodologie et outils
 
 - utilisation de Git et GitHub pour le versionnement du code  
 - gestion du projet avec issues, branches et pull requests  
@@ -885,7 +1116,7 @@ La réalisation de ce projet a permis de développer des compétences techniques
 
 ---
 
-### 11.6 Compétences transversales
+### 14.6 Compétences transversales
 
 - capacité d’analyse et de résolution de problèmes  
 - structuration et organisation d’un projet complet  
