@@ -246,15 +246,11 @@ npm start
 
 Par défaut, l’API est disponible sur :
 
-```text
-http://localhost:3001
-```
+[http://localhost:3001](http://localhost:3001)
 
 Le frontend local autorisé par défaut est :
 
-```text
-http://localhost:5173
-```
+[http://localhost:5173](http://localhost:5173)
 
 ---
 
@@ -262,9 +258,7 @@ http://localhost:5173
 
 Une documentation Swagger est disponible à l’adresse suivante :
 
-```text
-http://localhost:3001/api-docs
-```
+[http://localhost:3001/api-docs](http://localhost:3001/api-docs)
 
 Elle est servie par l’application Express à partir de `src/docs/openapi.js`.
 
