@@ -1,346 +1,568 @@
-# API – Trouve ton artisan
+# API - Trouve ton artisan
 
-Backend REST développé avec **Node.js**, **Express** et **MySQL**.
+Backend REST du projet **Trouve ton artisan**, développé avec **Node.js**, **Express**, **Sequelize** et **MySQL/MariaDB**.
 
-Cette API fournit les données nécessaires au frontend :
-- catégories
-- artisans
-- recherche d’artisans
-- fiche détaillée d’un artisan
+Cette API fournit au frontend :
+
+- la liste des catégories
+- la liste des artisans d’une catégorie
+- les artisans mis en avant
+- la recherche d’artisans
+- la fiche détaillée d’un artisan
+- l’envoi d’un message de contact via Mailtrap API
 
 ---
 
-## 🚀 Stack technique
+## Stack technique
 
 - Node.js
 - Express
 - MySQL / MariaDB
-- Sequelize (ORM)
-- mysql2 (driver utilisé par Sequelize)
+- Sequelize
+- mysql2
 - dotenv
 - cors
-- Swagger UI (documentation API)
-- Morgan (journalisation des requêtes HTTP)
+- morgan
+- swagger-ui-express
 
 ---
 
-## 📁 Architecture
-```
+## Architecture
+
+```text
 backend/
 ├── src/
-│   ├── app.js            # Configuration Express
-│   ├── server.js         # Point d'entrée du serveur
+│   ├── app.js                  # Configuration principale d’Express
+│   ├── server.js               # Point d’entrée du serveur, charge l’env et démarre l’API
 │   │
 │   ├── db/
-│   │   └── sequelize.js  # Configuration Sequelize (connexion DB)
+│   │   └── sequelize.js        # Configuration Sequelize et connexion MySQL
 │   │
-│   ├── models/           # Modèles Sequelize
+│   ├── models/                 # Modèles Sequelize
 │   │   ├── Artisan.js
 │   │   ├── Category.js
 │   │   ├── Specialty.js
-│   │   └── index.js      # Associations entre modèles
+│   │   └── index.js            # Déclaration des associations entre modèles
 │   │
-│   ├── controllers/      # Logique métier
+│   ├── controllers/            # Logique métier des endpoints
 │   │   ├── artisans.controller.js
 │   │   └── categories.controller.js
 │   │
-│   ├── routes/           # Définition des endpoints
+│   ├── routes/                 # Définition des routes HTTP
 │   │   ├── artisans.routes.js
 │   │   └── categories.routes.js
 │   │
-│   ├── middlewares/      # Middlewares (validation, erreurs)
+│   ├── middlewares/            # Validation et gestion des erreurs
 │   │   ├── catchAsync.js
 │   │   ├── errorHandler.js
 │   │   └── validateIdParam.js
 │   │
-│   └── docs/             # Documentation OpenAPI
-│       └── openapi.js
+│   └── docs/
+│       └── openapi.js          # Spécification OpenAPI utilisée par Swagger UI
 │
-└── package.json
+├── .env.exemple                # Modèle de variables d’environnement
+├── package.json
+└── readme.md
 ```
+
 Cette organisation sépare clairement :
 
 - **routes** : définition des endpoints HTTP
-- **controllers** : logique métier
-- **middlewares** : gestion des erreurs et validation
+- **controllers** : logique métier et format de réponse JSON
+- **middlewares** : validation et gestion des erreurs
 - **db** : connexion à la base de données
-- **docs** : documentation OpenAPI
+- **models** : structure des entités manipulées par Sequelize
+- **docs** : documentation OpenAPI exposée via Swagger UI
 
 ---
 
-## 🧩 Architecture backend
+## Architecture backend
 
-```
-Client (Frontend / navigateur)
+```text
+Client (frontend / navigateur)
 │
 ▼
 Routes (Express)
 │
 ▼
 Middlewares
-• validation paramètres
-• gestion erreurs async
+• validation des paramètres
+• gestion des erreurs async
 │
 ▼
 Controllers
-(Logique métier)
+(logique métier)
 │
 ▼
-Database Layer
-(MySQL / MariaDB)
+Sequelize ORM
+│
+▼
+MySQL / MariaDB
 │
 ▼
 Réponse JSON
 ```
-### Accès aux données
 
-L’accès à la base de données est réalisé via **Sequelize**, un ORM permettant
-de manipuler les tables sous forme de modèles JavaScript.
+### Circulation d’une requête
 
-Les relations entre tables sont définies dans `src/models/index.js` :
+Le flux d’une requête dans ce backend est le suivant :
 
-- Category (1) → (N) Specialty
-- Specialty (1) → (N) Artisan
+1. le client appelle une route Express
+2. la route applique éventuellement un ou plusieurs middlewares
+3. le contrôleur exécute la logique métier
+4. Sequelize interroge la base de données
+5. le contrôleur reformate les données si nécessaire
+6. l’API renvoie une réponse JSON au frontend
 
-Ces associations permettent à Sequelize de générer automatiquement
-les requêtes SQL nécessaires (JOIN).
+Cette séparation facilite :
+
+- la lisibilité du code
+- la maintenance
+- le débogage
+- l’évolution des endpoints sans mélanger routing, validation et accès aux données
+
+### Accès aux données et associations Sequelize
+
+L’accès à la base de données est réalisé via **Sequelize**, qui permet de manipuler les tables sous forme de modèles JavaScript.
+
+Les associations définies dans `src/models/index.js` sont :
+
+- `Category (1) -> (N) Specialty`
+- `Specialty (1) -> (N) Artisan`
+
+Ces relations permettent d’utiliser les `include` de Sequelize pour récupérer les données liées, par exemple :
+
+- la spécialité d’un artisan
+- la catégorie liée à cette spécialité
+
+Concrètement, cela évite d’écrire les jointures SQL à la main dans les contrôleurs et permet de conserver une logique métier plus lisible.
 
 ---
 
-## ⚙️ Installation
+## Fonctionnalités
 
-Depuis le dossier backend :
+L’API implémente actuellement les endpoints suivants :
 
-```
+- `GET /health`
+- `GET /api/categories`
+- `GET /api/categories/:id/artisans`
+- `GET /api/artisans/featured`
+- `GET /api/artisans/:id`
+- `GET /api/artisans?search=...`
+- `POST /api/artisans/:id/contact`
+
+---
+
+## Prérequis
+
+Pour exécuter le backend localement, il faut disposer de :
+
+- Node.js
+- npm
+- une base MySQL ou MariaDB accessible
+- un compte Mailtrap si tu veux tester l’envoi de message
+
+---
+
+## Installation
+
+Depuis le dossier `backend` :
+
+```bash
 npm install
 ```
+
+Créer ensuite un fichier `.env` à partir de `.env.exemple`.
+
 ---
 
-## 🔐 Configuration
-Créer un fichier .env basé sur .env.example.
+## Variables d’environnement
 
-Exemple :
-```
+Le projet fournit un modèle : [`.env.exemple`](./.env.exemple)
+
+### Exemple de configuration locale
+
+```env
 PORT=3001
+NODE_ENV=development
+
 DB_HOST=localhost
+DB_PORT=3306
 DB_USER=app_trouve_artisan
 DB_PASSWORD=CHANGE_ME
 DB_NAME=trouve_ton_artisan
+DB_SSL=false
 
+FRONTEND_URL=http://localhost:5173
+
+MAILTRAP_API_TOKEN=your_mailtrap_api_token
+MAILTRAP_INBOX_ID=your_mailtrap_inbox_id
+MAIL_FROM_EMAIL=no-reply@trouve-ton-artisan.fr
+MAIL_FROM_NAME=Trouve ton artisan
+MAIL_TO=test@example.com
 ```
-⚠️ Le fichier .env ne doit jamais être versionné.
+
+### Référence des variables
+
+| Variable | Obligatoire | Description |
+|---|---|---|
+| `PORT` | non | Port HTTP de l’API. Défaut : `3001` |
+| `NODE_ENV` | non | Environnement d’exécution, par exemple `development` ou `production` |
+| `DB_HOST` | oui | Hôte de la base de données |
+| `DB_PORT` | non | Port MySQL. Défaut : `3306` |
+| `DB_USER` | oui | Utilisateur MySQL |
+| `DB_PASSWORD` | oui | Mot de passe MySQL |
+| `DB_NAME` | oui | Nom de la base de données |
+| `DB_SSL` | non | Active SSL si la valeur est `true` |
+| `FRONTEND_URL` | non | Origine frontend autorisée par CORS. Défaut : `http://localhost:5173` |
+| `MAILTRAP_API_TOKEN` | oui pour le contact | Token API Mailtrap |
+| `MAILTRAP_INBOX_ID` | oui pour le contact | Identifiant de l’inbox Mailtrap |
+| `MAIL_FROM_EMAIL` | oui pour le contact | Adresse expéditeur utilisée par l’API |
+| `MAIL_FROM_NAME` | oui pour le contact | Nom expéditeur |
+| `MAIL_TO` | oui pour le contact | Adresse destinataire des messages |
+
+### Remarques importantes
+
+- Le fichier `.env` ne doit pas être versionné.
+- Si la connexion à la base de données échoue, le serveur ne démarre pas.
+- La connexion MySQL peut utiliser SSL avec `DB_SSL=true`.
+- L’endpoint de contact dépend de la configuration Mailtrap.
 
 ---
 
-## 🗄️ Base de données
+## Lancer l’API
 
-La base de données est utilisée :
+### Développement
 
-- en local (développement)
-- via **Aiven (MySQL managé)** en production
-
-Les connexions sont entièrement pilotées par les variables d’environnement.
-
----
-
-## ▶️ Lancer l’API
-En développement :
-```
+```bash
 npm run dev
 ```
-En production :
-```
+
+### Production
+
+```bash
 npm start
 ```
+
+Par défaut, l’API est disponible sur :
+
+```text
+http://localhost:3001
+```
+
+Le frontend local autorisé par défaut est :
+
+```text
+http://localhost:5173
+```
+
 ---
 
-## ❤️ Endpoint de test
-### GET /health
-Permet de vérifier que l’API est opérationnelle.
+## Documentation API
 
-Réponse :
+Une documentation Swagger est disponible à l’adresse suivante :
+
+```text
+http://localhost:3001/api-docs
 ```
+
+Elle est servie par l’application Express à partir de `src/docs/openapi.js`.
+
+---
+
+## Endpoints
+
+### `GET /health`
+
+Vérifie que l’API répond.
+
+#### Réponse
+
+```json
 {
   "status": "API OK"
 }
 ```
+
 ---
 
-## 📚 Endpoints disponibles
-
-### GET /api/categories
+### `GET /api/categories`
 
 Retourne la liste des catégories triées par ordre alphabétique.
 
+#### Exemple de réponse
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Alimentation"
+  },
+  {
+    "id": 2,
+    "name": "Bâtiment"
+  }
+]
+```
+
 ---
 
-### GET /api/categories/:id/artisans
+### `GET /api/categories/:id/artisans`
 
-Retourne les artisans appartenant à une catégorie donnée.
+Retourne les artisans rattachés à une catégorie.
+
+#### Exemple
+
+```text
+GET /api/categories/2/artisans
+```
+
+#### Exemple de réponse
+
+```json
+{
+  "category": {
+    "id": 2,
+    "name": "Bâtiment"
+  },
+  "artisans": [
+    {
+      "id": 4,
+      "name": "Martin Couverture",
+      "rating": 4.8,
+      "city": "Lyon",
+      "image_url": "https://example.com/images/martin.jpg",
+      "specialty": "Couvreur"
+    }
+  ]
+}
+```
+
+#### Erreurs possibles
+
+- `400` : identifiant invalide
+- `404` : catégorie introuvable
 
 ---
 
-### GET /api/artisans/featured
+### `GET /api/artisans/featured`
 
-Retourne jusqu’à **3 artisans mis en avant** (page d’accueil).
+Retourne jusqu’à `3` artisans mis en avant.
 
-Tri :
+#### Tri appliqué
+
 - note décroissante
 - nom alphabétique
 
+#### Exemple de réponse
+
+```json
+[
+  {
+    "id": 3,
+    "name": "Boulangerie Durand",
+    "rating": 4.9,
+    "city": "Toulouse",
+    "image_url": "https://example.com/images/durand.jpg",
+    "is_featured": 1,
+    "specialty": "Boulanger",
+    "category": "Alimentation"
+  }
+]
+```
+
 ---
 
-### GET /api/artisans/:id
+### `GET /api/artisans/:id`
 
-Retourne la **fiche détaillée d’un artisan**.
+Retourne la fiche détaillée d’un artisan.
+
+#### Exemple
+
+```text
+GET /api/artisans/3
+```
+
+#### Exemple de réponse
+
+```json
+{
+  "id": 3,
+  "name": "Boulangerie Durand",
+  "rating": 4.9,
+  "city": "Toulouse",
+  "about": "Artisan boulanger depuis 15 ans.",
+  "email": "contact@durand.fr",
+  "website": "https://durand.fr",
+  "image_url": "https://example.com/images/durand.jpg",
+  "is_featured": 1,
+  "specialty": "Boulanger",
+  "category": "Alimentation"
+}
+```
+
+#### Erreurs possibles
+
+- `400` : identifiant invalide
+- `404` : artisan introuvable
 
 ---
 
-### GET /api/artisans?search=motcle
+### `GET /api/artisans?search=...`
 
-Recherche d’artisans par :
+Recherche des artisans par :
 
 - nom
 - ville
 - spécialité
 
-Exemple :
-GET /api/artisans?search=boulanger
+La recherche est paginée.
 
----
+#### Paramètres de requête
 
----
+| Paramètre | Obligatoire | Description |
+|---|---|---|
+| `search` | non | Mot-clé recherché |
+| `page` | non | Numéro de page. Défaut : `1` |
+| `limit` | non | Nombre maximum de résultats. Défaut : `25`, maximum : `100` |
 
-### POST /api/artisans/:id/contact
+#### Exemple
 
-Permet d’envoyer un message à un artisan via le formulaire de contact.
-
-#### Paramètres
-
-- `id` (path) : identifiant de l’artisan
-
-#### Body (JSON)
-
+```text
+GET /api/artisans?search=boulanger&page=1&limit=10
 ```
+
+#### Exemple de réponse
+
+```json
+{
+  "page": 1,
+  "limit": 10,
+  "results": 1,
+  "data": [
+    {
+      "id": 3,
+      "name": "Boulangerie Durand",
+      "rating": 4.9,
+      "city": "Toulouse",
+      "image_url": "https://example.com/images/durand.jpg",
+      "is_featured": 1,
+      "specialty": "Boulanger",
+      "category": "Alimentation"
+    }
+  ]
+}
+```
+
+#### Si `search` est absent ou vide
+
+```json
+{
+  "page": 1,
+  "limit": 25,
+  "results": 0,
+  "data": []
+}
+```
+
+---
+
+### `POST /api/artisans/:id/contact`
+
+Envoie un message lié à un artisan via l’API HTTP Mailtrap.
+
+#### Exemple de requête
+
+```text
+POST /api/artisans/3/contact
+Content-Type: application/json
+```
+
+```json
 {
   "name": "Jean Dupont",
   "email": "jean@email.com",
   "message": "Bonjour, je souhaite un devis."
 }
 ```
-#### Réponse
-```
+
+#### Réponse en cas de succès
+
+```json
 {
   "success": true,
-  "message": "Message envoyé avec succès",
-  "messageId": "<id-du-message>",
-  "previewUrl": "https://ethereal.email/..."
+  "message": "Message envoyé avec succès"
 }
 ```
 
-**Notes:**
-- Les emails sont envoyés via un service SMTP (Ethereal en développement)
-- Le previewUrl permet de visualiser l’email sans envoi réel
+#### Erreurs possibles
+
+- `400` : champs requis manquants
+- `404` : artisan introuvable
+- `503` : service de contact momentanément indisponible
+
+#### Comportement actuel
+
+- l’envoi est réalisé via Mailtrap API
+- l’email fourni par l’utilisateur est utilisé comme `reply_to`
+- la réponse ne contient actuellement ni `messageId` ni `previewUrl`
 
 ---
 
-## ✉️ Système de contact
+## Gestion des erreurs
 
-### Développement
+L’API repose sur :
 
-- utilisation de **Nodemailer**
-- envoi simulé via SMTP (Ethereal)
+- `validateIdParam` pour valider les paramètres d’URL
+- `catchAsync` pour centraliser les erreurs asynchrones
+- `errorHandler` pour renvoyer des réponses JSON cohérentes
 
-### Production
+### Exemples
 
-Le système SMTP a été remplacé par l’API **Mailtrap (mode sandbox)**.
+```json
+{
+  "error": "Invalid id"
+}
+```
 
-Raison :
-- ports SMTP bloqués sur Render
-- contraintes de sécurité des plateformes cloud
+```json
+{
+  "error": "Category not found"
+}
+```
 
-Mailtrap permet :
-- de simuler l’envoi d’emails
-- de tester sans dépendance SMTP
+```json
+{
+  "error": "Artisan not found"
+}
+```
 
-Variables nécessaires :
-- MAILTRAP_API_TOKEN=
-- MAILTRAP_INBOX_ID=
-
-## 📖 Documentation API
-
-La documentation complète de l’API est disponible via Swagger :
-[http://localhost:3001/api-docs](http://localhost:3001/api-docs)
-
-Cette documentation est basée sur la spécification **OpenAPI 3**.
-
----
-
-## 📊 Logs API
-
-L'API utilise le middleware **Morgan** afin de journaliser les requêtes HTTP.
-
-Chaque requête affiche dans le terminal :
-
-- la méthode HTTP
-- l’URL appelée
-- le code de réponse
-- le temps de réponse
-
-Exemple :
-
-GET /api/categories 200 12 ms
+```json
+{
+  "error": "Le service de contact est momentanément indisponible. Veuillez réessayer plus tard."
+}
+```
 
 ---
 
-## 🛡️ Sécurité
+## Logs et sécurité
 
-Utilisation d’un **utilisateur MySQL dédié** à l’application.
+### Logs
 
-Principe du **moindre privilège** :
-- SELECT
-- INSERT
-- UPDATE
-- DELETE
+L’API utilise **Morgan** pour journaliser les requêtes HTTP :
 
-Séparation des secrets via variables d’environnement.
+- format `dev` en développement
+- format `combined` en production
 
-Aucun mot de passe réel versionné dans le dépôt.
+### Sécurité
 
----
-
-## 🧠 Bonnes pratiques appliquées
-
-### Architecture claire :
-
-routes → controllers → base de données
+- les secrets sont externalisés via les variables d’environnement
+- CORS autorise l’origine définie par `FRONTEND_URL`
+- la connexion MySQL peut utiliser SSL avec `DB_SSL=true`
 
 ---
 
-### Utilisation de middlewares :
+## Évolution technique
 
-- `catchAsync` : gestion centralisée des erreurs async
-- `errorHandler` : gestion globale des erreurs
-- `validateIdParam` : validation des paramètres d’URL
-
----
-
-### Autres bonnes pratiques :
-
-- ORM Sequelize pour l'accès aux données
-- séparation `app` / `server`
-- standardisation charset `utf8mb4`
-- collation `utf8mb4_unicode_ci`
-- pagination des résultats pour les recherches d'artisans
-- journalisation des requêtes HTTP avec Morgan
-
----
-
-## 🔮 Évolutions possibles
-
-- pagination avancée avec total des résultats
-- système de vérification des artisans (`is_verified`)
-- ajout d’un logo ou d’une image pour chaque artisan
-- authentification administrateur
-- système de notation par les utilisateurs
----
+- Implémentation initiale du contact via SMTP (Nodemailer / Ethereal)
+- Migration vers Mailtrap API pour compatibilité cloud (Render)
