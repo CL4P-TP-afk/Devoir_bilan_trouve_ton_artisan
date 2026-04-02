@@ -28,12 +28,24 @@ export const openapiSpec = {
           name: { type: "string" },
           rating: { type: "number" },
           city: { type: "string" },
-          image_url: { type: ["string", "null"] },
+          image_url: { type: "string", nullable: true },
           is_featured: { type: "integer" },
           specialty: { type: "string" },
           category: { type: "string" },
         },
-        required: ["id", "name", "rating", "city", "specialty", "category"],
+        required: ["id", "name", "rating", "city", "image_url", "is_featured", "specialty", "category"],
+      },
+      CategoryArtisan: {
+        type: "object",
+        properties: {
+          id: { type: "integer" },
+          name: { type: "string" },
+          rating: { type: "number" },
+          city: { type: "string" },
+          image_url: { type: "string", nullable: true },
+          specialty: { type: "string" },
+        },
+        required: ["id", "name", "rating", "city", "image_url", "specialty"],
       },
       ArtisanDetail: {
         allOf: [
@@ -41,11 +53,11 @@ export const openapiSpec = {
           {
             type: "object",
             properties: {
-              about: { type: ["string", "null"] },
+              about: { type: "string", nullable: true },
               email: { type: "string" },
-              website: { type: ["string", "null"] },
+              website: { type: "string", nullable: true },
             },
-            required: ["email"],
+            required: ["about", "email", "website"],
           },
         ],
       },
@@ -100,6 +112,12 @@ export const openapiSpec = {
               "application/json": { schema: { $ref: "#/components/schemas/Error" } },
             },
           },
+          500: {
+            description: "Erreur serveur",
+            content: {
+              "application/json": { schema: { $ref: "#/components/schemas/Error" } },
+            },
+          },
         },
       },
     },
@@ -127,7 +145,7 @@ export const openapiSpec = {
                     category: { $ref: "#/components/schemas/Category" },
                     artisans: {
                       type: "array",
-                      items: { $ref: "#/components/schemas/ArtisanCard" },
+                      items: { $ref: "#/components/schemas/CategoryArtisan" },
                     },
                   },
                   required: ["category", "artisans"],
@@ -149,6 +167,12 @@ export const openapiSpec = {
           },
           503: {
             description: "Base de données indisponible",
+            content: {
+              "application/json": { schema: { $ref: "#/components/schemas/Error" } },
+            },
+          },
+          500: {
+            description: "Erreur serveur",
             content: {
               "application/json": { schema: { $ref: "#/components/schemas/Error" } },
             },
@@ -175,6 +199,12 @@ export const openapiSpec = {
           },
           503: {
             description: "Base de données indisponible",
+            content: {
+              "application/json": { schema: { $ref: "#/components/schemas/Error" } },
+            },
+          },
+          500: {
+            description: "Erreur serveur",
             content: {
               "application/json": { schema: { $ref: "#/components/schemas/Error" } },
             },
@@ -222,6 +252,12 @@ export const openapiSpec = {
               "application/json": { schema: { $ref: "#/components/schemas/Error" } },
             },
           },
+          500: {
+            description: "Erreur serveur",
+            content: {
+              "application/json": { schema: { $ref: "#/components/schemas/Error" } },
+            },
+          },
         },
       },
     },
@@ -242,6 +278,7 @@ export const openapiSpec = {
         ],
         requestBody: {
           required: true,
+          description: "Validation backend actuelle: test `!value` uniquement sur `name`, `email` et `message`; pas de trim, pas de validation de format email, les chaînes vides sont rejetées, les chaînes contenant seulement des espaces sont acceptées.",
           content: {
             "application/json": {
               schema: {
@@ -249,15 +286,12 @@ export const openapiSpec = {
                 required: ["name", "email", "message"],
                 properties: {
                   name: {
-                    type: "string",
                     example: "Jean Dupont",
                   },
                   email: {
-                    type: "string",
                     example: "jean@email.com",
                   },
                   message: {
-                    type: "string",
                     example: "Bonjour, je souhaite un devis.",
                   },
                 },
@@ -275,8 +309,6 @@ export const openapiSpec = {
                   properties: {
                     success: { type: "boolean" },
                     message: { type: "string" },
-                    messageId: { type: "string" },
-                    previewUrl: { type: "string" },
                   },
                   required: ["success", "message"],
                 },
@@ -285,6 +317,22 @@ export const openapiSpec = {
           },
           400: {
             description: "Données invalides",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          404: {
+            description: "Artisan introuvable",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          503: {
+            description: "Service de contact indisponible",
             content: {
               "application/json": {
                 schema: { $ref: "#/components/schemas/Error" },
@@ -353,6 +401,14 @@ export const openapiSpec = {
           },
           503: {
             description: "Base de données indisponible",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/Error" },
+              },
+            },
+          },
+          500: {
+            description: "Erreur serveur",
             content: {
               "application/json": {
                 schema: { $ref: "#/components/schemas/Error" },
