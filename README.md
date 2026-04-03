@@ -1,257 +1,279 @@
 # Trouve ton artisan
 
-## Présentation du projet
+Application full stack permettant de consulter un annuaire d’artisans locaux, de naviguer par catégories, d’effectuer des recherches multi-critères et de contacter un artisan via un formulaire.
 
-Projet fullstack réalisé dans le cadre de ma formation développeur web.
+Le projet est composé de deux applications distinctes :
+- un frontend React/Vite dans `frontend/`
+- une API REST Node.js/Express dans `backend/`
 
-L'objectif de l'application est de permettre aux utilisateurs de trouver facilement un artisan local à partir de sa catégorie ou via une recherche multi-critères.
+## Présentation
 
-Fonctionnalités principales :
+Le frontend fournit l'interface utilisateur et consomme l'API backend pour afficher les données métier. Le backend expose des endpoints REST connectés à une base MySQL/MariaDB via Sequelize.
 
-- consulter les artisans par catégorie
-- afficher les artisans mis en avant
-- rechercher un artisan (nom, ville, spécialité)
-- consulter la fiche détaillée d’un artisan
-- contacter un artisan via un formulaire
+Le périmètre actuel couvre :
+- la page d'accueil avec artisans mis en avant
+- la navigation par catégories
+- la recherche par mot-clé
+- la fiche détaillée d'un artisan
+- le formulaire de contact relié au backend
 
----
+## Fonctionnalités
 
-## 📌 État d’avancement du projet
+### Frontend
 
-- ✅ Maquettage UX/UI (Figma : desktop / tablette / mobile)
-- ✅ Modélisation base de données (MCD / MLD / EER)
-- ✅ Scripts SQL (création, seed, tests)
-- ✅ API REST Node.js / Express
-- ✅ Documentation API Swagger (OpenAPI)
-- ✅ Frontend React (application complète)
-- ✅ Déploiement complet (Frontend, Backend, Base de données)
-- ✅ Mise en place du SEO (métadonnées dynamiques, sitemap, robots.txt)
+- affichage des artisans mis en avant sur la page d'accueil
+- chargement dynamique des catégories dans le header
+- fallback local des catégories si l'API est indisponible
+- navigation vers les pages catégorie, recherche et fiche artisan
+- recherche via l'URL `/recherche?q=...`
+- affichage des états `loading`, `error`, `empty state` et succès d'envoi
+- pages `404` et pages légales provisoires en construction
+- SEO simple via titre, meta description, `robots.txt` et `sitemap.xml`
 
----
+### Backend
 
-## 🛠️ Stack technique
+- endpoint de santé `GET /health`
+- liste des catégories triées par ordre alphabétique
+- liste des artisans d'une catégorie
+- sélection de 3 artisans mis en avant maximum
+- recherche paginée par nom, ville ou spécialité
+- récupération de la fiche complète d'un artisan
+- envoi d'un message de contact via l'API Mailtrap
+- documentation Swagger disponible sur `/api-docs`
+
+## Stack technique
+
+### Frontend
+
+- React 19
+- React Router DOM 7
+- Vite
+- Sass
+- Bootstrap 5
+- Bootstrap Icons
+- ESLint
 
 ### Backend
 
 - Node.js
-- Express
+- Express 5
+- Sequelize
 - MySQL / MariaDB
-- Sequelize (ORM)
 - mysql2
-- Swagger UI (OpenAPI)
 - dotenv
 - cors
-- morgan (logs HTTP)
-- nodemailer (formulaire de contact)
-
----
+- morgan
+- swagger-ui-express
 
 ### Base de données
 
-- MySQL / MariaDB (Aiven - base managée)
-- charset : `utf8mb4`
-- collation : `utf8mb4_unicode_ci`
+- MySQL / MariaDB
+- encodage `utf8mb4`
+- collation `utf8mb4_unicode_ci`
 
----
+## Architecture globale
 
-### Frontend
-
-- React
-- React Router
-- Vite
-- Sass (SCSS)
-- Bootstrap
-- Bootstrap Icons
-
----
-
-## 📂 Structure du projet
+```text
+frontend (React / Vite)
+  -> appelle l'API REST
+backend (Express / Sequelize)
+  -> interroge MySQL / MariaDB
 ```
-├── backend/ # API Express + Swagger
-├── frontend/ # application React
-├── sql/ # scripts SQL
-├── docs/ # rapport de projet
-├── tests/ # requêtes SQL de test
+
+### Structure du dépôt
+
+```text
+.
+├── backend/   # API REST Express, Sequelize, Swagger
+├── frontend/  # SPA React/Vite
+├── sql/       # scripts de création, seed et tests SQL
+├── tests/     # exports de résultats SQL documentés
+├── docs/      # rapport de projet
 └── README.md
 ```
 
----
+### Organisation backend
 
-## 🧠 Architecture backend
+Le backend suit une structure de type MVC légère :
+- `routes/` pour les endpoints HTTP
+- `controllers/` pour la logique métier
+- `models/` pour les modèles et associations Sequelize
+- `middlewares/` pour la validation et la gestion d'erreurs
+- `db/` pour la configuration Sequelize
+- `docs/` pour la spécification OpenAPI
 
-L'API suit une architecture **Express MVC** :
+### Organisation frontend
 
-- routes : définition des endpoints
-- controllers : logique métier
-- models : modèles Sequelize
-- middlewares : validation et gestion des erreurs
-- db : configuration Sequelize
+Le frontend est structuré par responsabilités :
+- `pages/` pour les vues routées
+- `components/` pour les composants réutilisables et sections
+- `services/` pour les appels API
+- `styles/` pour les styles Sass
+- `app/` pour la configuration applicative et les routes
 
-Sequelize est utilisé comme ORM pour manipuler les données via des modèles JavaScript.
+## Installation complète
 
----
+### 1. Base de données
 
-## 🧠 Architecture frontend
+Exécuter les scripts du dossier `sql/` dans cet ordre :
 
-Le frontend suit une architecture modulaire :
+1. `00_create_database.sql`
+2. `01_create_user_and_grants.sql`
+3. `02_schema.sql`
+4. `03_seed.sql`
+5. `04_tests.sql`
 
-- pages : gestion des routes
-- sections : découpage des pages
-- composants : éléments réutilisables
-- services : appels API centralisés
+Le script `01_create_user_and_grants.sql` crée un utilisateur applicatif local `app_trouve_artisan`. Le mot de passe défini dans ce script doit être reporté dans `backend/.env`.
 
-Exemple :
-```
-Home
-↓
-FeaturedArtisansSection
-↓
-ArtisanCard
-```
+### 2. Backend
 
-Cette organisation permet une meilleure maintenabilité et réutilisabilité du code.
-
----
-
-## 🚀 Installation du projet
-
-### 1️⃣ Base de données
-
-Dossier :
-```
-sql/
-```
-
-Ordre d’exécution :
-
-1. 00_create_database.sql  
-2. 01_create_user_and_grants.sql  
-3. 02_schema.sql  
-4. 03_seed.sql  
-5. 04_tests.sql  
-
----
-
-### 2️⃣ Lancer le backend
-
-```
+```bash
 cd backend
 npm install
-npm run dev
 ```
 
-API: [http://localhost:3001](http://localhost:3001)
+Créer ensuite un fichier `.env` à partir de `backend/.env.exemple`.
 
-Health check: [http://localhost:3001/health](http://localhost:3001/health)
+### 3. Frontend
 
-Swagger: [http://localhost:3001/api-docs](http://localhost:3001/api-docs)
-
----
-
-### 3️⃣ Lancer le frontend
-```
+```bash
 cd frontend
 npm install
+```
+
+Créer ensuite un fichier `.env` à partir de `frontend/.env.example`.
+
+## Configuration
+
+### Backend
+
+Variables principales :
+
+```env
+PORT=3001
+NODE_ENV=development
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=app_trouve_artisan
+DB_PASSWORD=CHANGE_ME
+DB_NAME=trouve_ton_artisan
+DB_SSL=false
+
+FRONTEND_URL=http://localhost:5173
+
+MAILTRAP_API_TOKEN=your_mailtrap_api_token
+MAILTRAP_INBOX_ID=your_mailtrap_inbox_id
+MAIL_FROM_EMAIL=no-reply@trouve-ton-artisan.fr
+MAIL_FROM_NAME=Trouve ton artisan
+MAIL_TO=test@example.com
+```
+
+Points importants :
+- l'API ne démarre que si la connexion à la base fonctionne
+- `FRONTEND_URL` contrôle l'origine autorisée par CORS
+- le formulaire de contact dépend de la configuration Mailtrap
+- `DB_SSL=true` active SSL pour une base distante
+
+### Frontend
+
+Variable utilisée :
+
+```env
+VITE_API_URL=http://localhost:3001/api
+```
+
+Si `VITE_API_URL` n'est pas définie, le frontend utilise cette même valeur par défaut via `src/services/api.js`.
+
+## Lancement du projet
+
+### Lancer le backend
+
+```bash
+cd backend
 npm run dev
 ```
-Application: [http://localhost:5173](http://localhost:5173)
 
----
+### Lancer le frontend
 
-## 🌍 Version déployée
-
-Le projet est accessible en ligne :
-
-- Frontend : https://devoir-bilan-trouve-ton-artisan-zeta.vercel.app  
-- Backend : (Render - URL API)
-
----
-
-## ✉️ Système de contact
-
-Le système de contact repose sur un endpoint backend :
+```bash
+cd frontend
+npm run dev
 ```
-POST /api/artisans/:id/contact
-```
-En environnement de développement, un système SMTP était utilisé via Nodemailer.
 
-En production, ce système a été remplacé par l’API **Mailtrap (mode sandbox)** en raison des limitations des plateformes cloud (ports SMTP bloqués sur Render).
+## URLs
 
-Cela permet de simuler l’envoi d’emails de manière fiable sans dépendre d’un serveur SMTP.
+### Locales
 
----
+- Frontend : `http://localhost:5173`
+- Backend : `http://localhost:3001`
+- Health check : `http://localhost:3001/health`
+- Swagger : `http://localhost:3001/api-docs`
 
-## 🔍 SEO
+### Déployées
 
-Le référencement du site a été pris en compte avec une approche hybride :
+- Frontend : `https://devoir-bilan-trouve-ton-artisan-zeta.vercel.app`
+- Backend : déployé sur Render (non exposé publiquement dans ce dépôt)
 
-- métadonnées statiques dans `index.html`
-- composant React `Seo.jsx` pour les pages dynamiques
-- génération d’un `sitemap.xml`
-- configuration d’un `robots.txt`
+## Interaction frontend / backend
 
-Chaque page dispose d’un titre et d’une description adaptés (accueil, catégorie, fiche artisan, recherche, etc.).
+Tous les appels HTTP du frontend sont centralisés dans `frontend/src/services/api.js` via `apiFetch()`.
 
----
+Flux principal :
 
+1. le frontend lit `VITE_API_URL`
+2. il appelle les endpoints `/api/...` du backend
+3. le backend interroge MySQL via Sequelize
+4. il renvoie des réponses JSON consommées par les pages React
 
-## 📚 Endpoints principaux
-- **Catégories:**
-  -   GET /api/categories
-  -   GET /api/categories/:id/artisans
+Correspondance principale :
 
-- **Artisans:**
-  -   GET /api/artisans/featured
-  -   GET /api/artisans/:id
-  -   GET /api/artisans?search=...
-  -   POST /api/artisans/:id/contact
+- `Home` -> `GET /api/artisans/featured`
+- `Header` -> `GET /api/categories`
+- `Category` -> `GET /api/categories/:id/artisans`
+- `SearchResults` -> `GET /api/artisans?search=...`
+- `ArtisanDetail` -> `GET /api/artisans/:id`
+- formulaire de contact -> `POST /api/artisans/:id/contact`
 
----
+## Endpoints principaux
 
-## 🔐 Sécurité
-- utilisateur MySQL dédié
-- principe du moindre privilège
-- variables d’environnement (.env)
-- gestion centralisée des erreurs
-- protection contre les injections SQL via Sequelize
+### Santé
 
----
+- `GET /health`
 
-## 📊 Fonctionnalités backend
-- API REST Express
-- ORM Sequelize
-- pagination des résultats
-- recherche multi-critères
-- logs HTTP (Morgan)
-- validation des paramètres
-- envoi d’emails (Nodemailer)
+### Catégories
 
----
+- `GET /api/categories`
+- `GET /api/categories/:id/artisans`
 
-## 🎯 Fonctionnalités frontend
-- navigation multi-pages (React Router)
-- recherche dynamique d’artisans
-- affichage conditionnel (loading / error / empty state)
-- composants réutilisables
-- formulaire de contact connecté à l’API
-- fallback en cas d’indisponibilité API
-- interface responsive
+### Artisans
 
----
+- `GET /api/artisans/featured`
+- `GET /api/artisans`
+- `GET /api/artisans/:id`
+- `POST /api/artisans/:id/contact`
 
-## 📈 Qualité du projet
+## Choix techniques notables
 
-Une analyse Lighthouse a été réalisée (exemple sur home-desktop):
+- La recherche backend est paginée avec `page` et `limit`, même si l'interface actuelle n'expose qu'une recherche simple par mot-clé.
+- Les artisans mis en avant sont limités à 3 côté serveur et triés par note décroissante puis nom.
+- Les catégories du header disposent d'un fallback local pour préserver la navigation de base si l'API ne répond pas.
+- Les autres pages affichent explicitement des états d'erreur ou d'absence de données plutôt que de masquer un échec backend.
+- L'image d'un artisan a un fallback local côté frontend si `image_url` est absente.
+- Le contact passe par l'API HTTP Mailtrap et non par SMTP.
+- Les pages `/mentions-legales`, `/donnees-personnelles`, `/accessibilite` et `/cookies` pointent actuellement vers une page générique en construction.
 
-- Performance : 100
-- Accessibilité : 95
-- Bonnes pratiques : 100
-- SEO : 100
+## SEO
 
----
+Le projet inclut un socle SEO adapté à une SPA :
 
-## 👤 Auteur
-```
-Loïc
+- balises de base dans `frontend/index.html`
+- mise à jour dynamique du titre et de la meta description via `Seo.jsx`
+- `frontend/public/robots.txt`
+- `frontend/public/sitemap.xml`
+- métadonnées dédiées pour l'accueil, les catégories, la recherche, la fiche artisan, la 404 et la page en construction
+
+## Auteur
+
+Loïc  
 Projet réalisé dans le cadre d'une formation développeur web.
-```
