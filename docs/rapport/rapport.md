@@ -81,15 +81,6 @@ Les fonctionnalités essentielles identifiées sont :
 - navigation responsive
 - page d’erreur 404
 
-### 3.2 Périmètre volontairement limité
-
-Certaines fonctionnalités ont été volontairement exclues :
-- création de compte utilisateur
-- système de paiement
-- interface d’administration
-
-> Le périmètre fonctionnel a volontairement été limité afin de répondre strictement aux besoins exprimés, sans complexifier l’application inutilement.
-
 ---
 
 ## 4. Contraintes techniques
@@ -100,6 +91,7 @@ Les technologies imposées sont :
 - React
 - Express
 - MySQL
+- Sequelize
 - API REST
 - Figma
 - Git / GitHub
@@ -119,7 +111,7 @@ Le projet doit également respecter :
 
 ## 5. Organisation du travail
 
-Le projet a été organisé selon une méthodologie progressive, inspirée des pratiques professionnelles du développement web.  
+Le projet a été organisé selon une méthodologie en V. 
 Chaque étape dépend de la précédente afin de limiter les retours en arrière et d’assurer une cohérence globale entre le design, les données et le développement.
 
 ### 5.1 Ordre des travaux réalisés
@@ -801,7 +793,7 @@ Une analyse avec Lighthouse a été réalisée sur plusieurs pages :
 - page catégorie
 - fiche artisan
 
-Les résultats obtenus sont :
+exemple de résultat sur la page d'accueil desktop :
 
 - Performance : 100
 - Accessibilité : 95
@@ -810,7 +802,7 @@ Les résultats obtenus sont :
 
 Ces scores confirment la qualité globale du projet.
 
-Des améliorations mineures restent possibles sur l’accessibilité.
+Des améliorations  restent possibles .
 
 ## 13. Difficultés rencontrées et solutions
 
