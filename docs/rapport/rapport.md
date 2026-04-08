@@ -739,12 +739,24 @@ Ces restrictions sont liées aux politiques de sécurité des plateformes cloud.
 
 ### 11.2 Solution mise en place
 
-Le système d’envoi d’email a été remplacé par l’API **Mailtrap** en mode sandbox.
+Dans un premier temps, un système SMTP classique via Nodemailer a été mis en place en environnement de développement, en utilisant des services de test (Ethereal Email).
+
+Cependant, lors du déploiement sur Render, des limitations techniques sont apparues :
+- blocage des ports SMTP
+- impossibilité d’établir une connexion sortante vers les serveurs SMTP
+
+Afin de contourner ces contraintes, le système d’envoi d’email a été remplacé par l’API **Mailtrap (mode sandbox)**.
+
+Contrairement à une approche SMTP, Mailtrap repose sur une API HTTP sécurisée utilisant :
+- un **token d’authentification (MAILTRAP_API_TOKEN)**
+- un **identifiant d’inbox (MAILTRAP_INBOX_ID)**
 
 Cette solution permet :
-- de simuler l’envoi d’emails
-- de tester le fonctionnement sans dépendre d’un serveur SMTP
+- de simuler l’envoi d’emails sans dépendre d’un serveur SMTP
+- de contourner les restrictions réseau des plateformes cloud
 - de visualiser les messages envoyés via une interface dédiée
+
+Cette évolution illustre l’adaptation de la solution technique face aux contraintes de production.
 
 ### 11.3 Justification technique
 
@@ -755,6 +767,22 @@ Mailtrap permet ici de reproduire un comportement réaliste tout en restant adap
 ### 11.4 Résultat
 
 Le formulaire de contact fonctionne en production et les messages sont correctement simulés et consultables.
+
+### 11.5 Adaptation du formulaire de contact côté frontend
+
+La mise en place du système de contact a également nécessité une adaptation côté frontend.
+
+Plusieurs états ont été gérés afin d’améliorer l’expérience utilisateur :
+
+- état de chargement lors de l’envoi du message
+- message de succès après envoi
+- message d’erreur en cas d’échec de l’API
+
+Ces états permettent d’éviter toute confusion pour l’utilisateur et de rendre l’interface plus robuste.
+
+Une validation simple des champs (nom, email, message) est également effectuée côté client avant l’envoi.
+
+Cette approche garantit une meilleure qualité d’interaction et une cohérence avec les pratiques modernes de développement frontend.
 
 ## 12. Optimisation SEO
 
@@ -778,6 +806,15 @@ Deux fichiers ont été ajoutés :
 - `sitemap.xml` : liste les pages principales, les catégories et les fiches artisans
 
 Le sitemap a été construit manuellement à partir des routes existantes, en s’appuyant sur les données du seed.
+
+Un travail spécifique a également été réalisé pour inclure les pages dynamiques dans le sitemap :
+
+- pages catégories (/categories/:id)
+- fiches artisans (/artisans/:id)
+
+Ces pages ont été ajoutées manuellement en s’appuyant sur les données du seed, garantissant ainsi une meilleure couverture des contenus par les moteurs de recherche.
+
+Dans un contexte réel, ce sitemap serait généré dynamiquement côté backend.
 
 ### 12.3 Limites
 
@@ -909,6 +946,10 @@ Une erreur d’authentification SMTP est apparue :
 ```
 
 Cette erreur était liée à une mauvaise configuration des identifiants ou du service SMTP.
+
+Suite au déploiement en production, cette approche SMTP a été abandonnée au profit d’une solution basée sur l’API Mailtrap.
+
+Cette évolution met en évidence la différence entre un environnement de développement et un environnement de production, où certaines contraintes techniques (réseau, sécurité) peuvent imposer des choix différents.
 
 #### Solution mise en place
 
@@ -1115,3 +1156,13 @@ La réalisation de ce projet a permis de développer des compétences techniques
 - compréhension du fonctionnement d’une architecture fullstack  
 - amélioration continue du code et de l’expérience utilisateur  
 ---
+
+### 14.7 Passage du développement local à la production
+
+Enfin, ce projet a permis de se confronter à des problématiques concrètes liées au passage du développement local à la production, notamment :
+
+- gestion des environnements
+- contraintes des plateformes cloud
+- adaptation des solutions techniques (email, base de données)
+
+Ces éléments ont renforcé la compréhension des enjeux réels du développement web en contexte professionnel.
