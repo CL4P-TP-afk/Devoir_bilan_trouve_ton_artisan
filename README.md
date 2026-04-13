@@ -6,6 +6,9 @@ Le projet est composé de deux applications distinctes :
 - un frontend React/Vite dans `frontend/`
 - une API REST Node.js/Express dans `backend/`
 
+Le projet est visible en production a cette adresse :
+- [https://devoir-bilan-trouve-ton-artisan-zeta.vercel.app](https://devoir-bilan-trouve-ton-artisan-zeta.vercel.app) 
+
 ## Présentation
 
 Le frontend fournit l'interface utilisateur et consomme l'API backend pour afficher les données métier. Le backend expose des endpoints REST connectés à une base MySQL/MariaDB via Sequelize.
@@ -212,7 +215,7 @@ npm run dev
 
 ### Déployées
 
-- Frontend : `https://devoir-bilan-trouve-ton-artisan-zeta.vercel.app`
+- Frontend : [https://devoir-bilan-trouve-ton-artisan-zeta.vercel.app](https://devoir-bilan-trouve-ton-artisan-zeta.vercel.app)
 - Backend : déployé sur Render (non exposé publiquement dans ce dépôt)
 
 ## Interaction frontend / backend
